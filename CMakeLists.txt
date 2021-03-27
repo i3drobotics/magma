@@ -283,7 +283,7 @@ if (CUDA_FOUND)
     endif()
 
     if (WIN32)
-        set( CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} -DHAVE_CUBLAS -Xfatbin -compress-all -Xcompiler -std=c++11 ${NV_SM} ${NV_COMP} ${FORTRAN_CONVENTION} )
+        set( CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} -DHAVE_CUBLAS -Xfatbin -compress-all -Xcompiler ${NV_SM} ${NV_COMP} ${FORTRAN_CONVENTION} )
     else(WIN32)
         set( CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} -DHAVE_CUBLAS -Xfatbin -compress-all -Xcompiler -fPIC -std=c++11 ${NV_SM} ${NV_COMP} ${FORTRAN_CONVENTION} )
     endif(WIN32)
