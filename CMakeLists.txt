@@ -442,7 +442,8 @@ if (WIN32)
     #message( "libmagma_all_f   ${libmagma_all_f}"   )
 
     # on Windows, Fortran files aren't compiled if listed here...
-    cuda_add_library( magma STATIC  ${libmagma_all_cpp} )
+    #cuda_add_library( magma STATIC ${libmagma_all_cpp} )
+    cuda_add_library( magma ${libmagma_all_cpp} )
     target_link_libraries( magma
         ${LAPACK_LIBRARIES}
         ${CUDA_CUDART_LIBRARY}
@@ -464,7 +465,8 @@ if (WIN32)
     ## make list of Fortran .mod files to install, as below
 else()
     # Unix doesn't seem to have a problem with mixing C, CUDA, and Fortran files
-    cuda_add_library( magma STATIC ${libmagma_all} )
+    #cuda_add_library( magma STATIC ${libmagma_all} )
+    cuda_add_library( magma ${libmagma_all} )
     target_link_libraries( magma
         ${blas_fix}
         ${LAPACK_LIBRARIES}
