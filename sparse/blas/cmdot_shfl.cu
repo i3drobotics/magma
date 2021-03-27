@@ -1,11 +1,11 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
-       @generated from sparse/blas/zmdot_shfl.cu, normal z -> c, Thu Oct  8 23:05:47 2020
+       @generated from sparse/blas/zmdot_shfl.cu, normal z -> c, Sat Mar 27 20:32:27 2021
        @author Moritz Kreutzer
 
 */
@@ -18,7 +18,7 @@
 
 #include <cuda.h>  // for CUDA_VERSION
 
-#if (CUDA_VERSION <= 6000)
+#if (CUDA_VERSION <= 6000) && !defined(__HIP_ARCH_HAS_WARP_SHUFFLE__)
 // CUDA 6.5 adds Double precision version; here's an implementation for CUDA 6.0 and earlier.
 // from https://devblogs.nvidia.com/parallelforall/faster-parallel-reductions-kepler/
 __device__ inline

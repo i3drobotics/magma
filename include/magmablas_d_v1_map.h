@@ -1,11 +1,11 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
-       @generated from include/magmablas_z_v1_map.h, normal z -> d, Thu Oct  8 23:05:56 2020
+       @generated from include/magmablas_z_v1_map.h, normal z -> d, Sat Mar 27 20:33:17 2021
 */
 
 #ifndef MAGMABLAS_D_V1_MAP_H

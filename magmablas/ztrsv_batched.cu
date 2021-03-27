@@ -1,9 +1,9 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
        @author Tingxing Dong
        @author Azzam Haidar
@@ -32,8 +32,6 @@
 #include "ztrsv_template_device.cuh"
 
 #define A(i, j)  (A + (i) + (j)*lda)   // A(i, j) means at i row, j column
-
-extern __shared__ magmaDoubleComplex shared_data[];
 
 
 /******************************************************************************/

@@ -1,11 +1,11 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
-       @generated from magmablas/zlarfg-v2.cu, normal z -> c, Thu Oct  8 23:05:33 2020
+       @generated from magmablas/zlarfg-v2.cu, normal z -> c, Sat Mar 27 20:31:22 2021
 
 */
 #include "magma_internal.h"
@@ -89,7 +89,7 @@ void magma_clarfg_gpu_kernel( int n, magmaFloatComplex* dx0, magmaFloatComplex* 
     Generates Householder elementary reflector H = I - tau v v^T to reduce
         H [ dx0 ] = [ beta ]
           [ dx  ]   [ 0    ]
-    with beta = ±norm( [dx0, dx] ) = ±dxnorm[0].
+    with |beta| = norm( [dx0, dx] ) = dxnorm[0].
     Stores v over dx; first element of v is 1 and is not stored.
     Stores beta over dx0.
     Stores tau.  

@@ -1,14 +1,13 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
        @precisions normal z -> s d c
 
 */
-#include <cuda_runtime.h>
 
 #include "magma_internal.h"
 
@@ -135,7 +134,8 @@ magma_zgeqrf_ooc(
 
     /* Check how much memory do we have */
     size_t freeMem, totalMem;
-    cudaMemGetInfo( &freeMem, &totalMem );
+    //cudaMemGetInfo( &freeMem, &totalMem );
+    magma_mem_info(&freeMem, &totalMem);
     freeMem /= sizeof(magmaDoubleComplex);
     
     magma_int_t NB = (magma_int_t)(0.8*freeMem/m);

@@ -1,9 +1,9 @@
 /*
-   -- MAGMA (version 2.5.4) --
+   -- MAGMA (version 2.0) --
    Univ. of Tennessee, Knoxville
    Univ. of California, Berkeley
    Univ. of Colorado, Denver
-   @date October 2020
+   @date
 
    @author Azzam Haidar
    @author Tingxing Dong
@@ -15,8 +15,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
-
-#include <cuda_runtime.h>  // cudaMemset
 
 // includes, project
 #include "flops.h"
@@ -95,7 +93,7 @@ int main( int argc, char** argv)
             /* ====================================================================
                Performs operation using MAGMA
                =================================================================== */
-            cudaMemset( dinfo_magma, 0, batchCount * sizeof(magma_int_t) );
+            magma_memset( dinfo_magma, 0, batchCount * sizeof(magma_int_t) );
 
             magma_zset_pointer( d_A_array, d_A, ldda, 0, 0, ldda * N, batchCount, queue );
             gpu_time = magma_sync_wtime( opts.queue );

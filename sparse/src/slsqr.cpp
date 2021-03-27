@@ -1,13 +1,13 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
        @author Hartwig Anzt
 
-       @generated from sparse/src/zlsqr.cpp, normal z -> s, Thu Oct  8 23:05:55 2020
+       @generated from sparse/src/zlsqr.cpp, normal z -> s, Sat Mar 27 20:33:01 2021
 */
 
 #include "magmasparse_internal.h"
@@ -86,7 +86,7 @@ magma_slsqr(
                     v={Magma_CSR}, z={Magma_CSR}, zt={Magma_CSR},
                     d={Magma_CSR}, vt={Magma_CSR}, q={Magma_CSR}, 
                     w={Magma_CSR}, u={Magma_CSR}, ut={Magma_CSR};
-    CHECK( magma_svinit( &r, Magma_DEV, A.num_cols, b.num_cols, c_zero, queue ));
+    CHECK( magma_svinit( &r, Magma_DEV, A.num_rows, b.num_cols, c_zero, queue ));
     CHECK( magma_svinit( &v, Magma_DEV, A.num_cols, b.num_cols, c_zero, queue ));
     CHECK( magma_svinit( &z, Magma_DEV, A.num_cols, b.num_cols, c_zero, queue ));
     CHECK( magma_svinit( &zt,Magma_DEV, A.num_cols, b.num_cols, c_zero, queue ));

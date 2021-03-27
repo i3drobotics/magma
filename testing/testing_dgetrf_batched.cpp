@@ -1,14 +1,14 @@
 /*
-   -- MAGMA (version 2.5.4) --
+   -- MAGMA (version 2.0) --
    Univ. of Tennessee, Knoxville
    Univ. of California, Berkeley
    Univ. of Colorado, Denver
-   @date October 2020
+   @date
 
    @author Azzam Haidar
    @author Tingxing Dong
 
-   @generated from testing/testing_zgetrf_batched.cpp, normal z -> d, Thu Oct  8 23:05:45 2020
+   @generated from testing/testing_zgetrf_batched.cpp, normal z -> d, Sat Mar 27 20:32:18 2021
  */
 // includes, system
 #include <stdlib.h>
@@ -172,9 +172,15 @@ int main( int argc, char** argv)
 
             cublas_time = magma_sync_wtime( opts.queue );
             if (M == N ) {
+                #ifdef HAVE_CUBLAS
                 cublasDgetrfBatched( opts.handle, int(N),
                                      dA_array, int(ldda), dipiv_cublas,
                                      dinfo_cublas, int(batchCount) );
+                #else
+                hipblasDgetrfBatched( opts.handle, int(N),
+                                     (double**)dA_array, int(ldda), dipiv_cublas,
+                                     dinfo_cublas, int(batchCount) );
+                #endif    
             }
             else {
                 printf("M != N, CUBLAS required M == N; CUBLAS is disabled\n");

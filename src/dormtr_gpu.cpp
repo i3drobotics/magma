@@ -1,14 +1,14 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
        @author Raffaele Solca
        @author Stan Tomov
 
-       @generated from src/zunmtr_gpu.cpp, normal z -> d, Thu Oct  8 23:05:27 2020
+       @generated from src/zunmtr_gpu.cpp, normal z -> d, Sat Mar 27 20:30:50 2021
 
 */
 #include "magma_internal.h"

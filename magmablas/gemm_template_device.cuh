@@ -1,9 +1,9 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
        
        @author Jakub Kurzak
        @author Stan Tomov
@@ -43,7 +43,7 @@ void gemm_template_device_nn(
     T*       __restrict__ C, int LDC,
     T alpha, T beta )
 {
-#if (__CUDA_ARCH__ >= 200)
+#if (__CUDA_ARCH__ >= 200) || defined(HAVE_HIP)
     int idx = threadIdx.x;  // thread's m dimension
     int idy = threadIdx.y;  // thread's n dimension
 
@@ -229,7 +229,7 @@ void gemm_template_device_nn(
             }
         }
     }
-#endif /* (__CUDA_ARCH__ >= 200) */
+#endif /* (__CUDA_ARCH__ >= 200) || defined(HAVE_HIP) */
 }
 
 
@@ -245,7 +245,7 @@ void gemm_template_device_nt(
     T*       __restrict__ C, int LDC,
     T alpha, T beta )
 {
-#if (__CUDA_ARCH__ >= 200)
+#if (__CUDA_ARCH__ >= 200) || defined(HAVE_HIP)
     int idx = threadIdx.x;  // thread's m dimension
     int idy = threadIdx.y;  // thread's n dimension
 
@@ -435,7 +435,7 @@ void gemm_template_device_nt(
             }
         }
     }
-#endif /* (__CUDA_ARCH__ >= 200) */
+#endif /* (__CUDA_ARCH__ >= 200) || defined(HAVE_HIP) */
 }
 
 
@@ -451,7 +451,7 @@ void gemm_template_device_tn(
     T*       __restrict__ C, int LDC,
     T alpha, T beta )
 {
-#if (__CUDA_ARCH__ >= 200)
+#if (__CUDA_ARCH__ >= 200) || defined(HAVE_HIP)
     int idx = threadIdx.x;  // thread's m dimension
     int idy = threadIdx.y;  // thread's n dimension
 
@@ -644,7 +644,7 @@ void gemm_template_device_tn(
             }
         }
     }
-#endif /* (__CUDA_ARCH__ >= 200) */
+#endif /* (__CUDA_ARCH__ >= 200) || defined(HAVE_HIP) */
 }
 
 
@@ -660,7 +660,7 @@ void gemm_template_device_tt(
     T*       __restrict__ C, int LDC,
     T alpha, T beta )
 {
-#if (__CUDA_ARCH__ >= 200)
+#if (__CUDA_ARCH__ >= 200) || defined(HAVE_HIP)
     int idx = threadIdx.x;  // thread's m dimension
     int idy = threadIdx.y;  // thread's n dimension
 
@@ -854,7 +854,7 @@ void gemm_template_device_tt(
             }
         }
     }
-#endif /* (__CUDA_ARCH__ >= 200) */
+#endif /* (__CUDA_ARCH__ >= 200) || defined(HAVE_HIP) */
 }
 
 #endif //GEMM_TEMPLATE_DEVICE_CUH

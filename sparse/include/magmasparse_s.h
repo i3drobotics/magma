@@ -1,11 +1,11 @@
 /*
- -- MAGMA (version 2.5.4) --
+ -- MAGMA (version 1.1) --
  Univ. of Tennessee, Knoxville
  Univ. of California, Berkeley
  Univ. of Colorado, Denver
- @date October 2020
+ @date
 
- @generated from sparse/include/magmasparse_z.h, normal z -> s, Thu Oct  8 23:05:57 2020
+ @generated from sparse/include/magmasparse_z.h, normal z -> s, Sat Mar 27 20:33:22 2021
  @author Hartwig Anzt
 */
 
@@ -1279,6 +1279,13 @@ magma_sparilut_gpu(
     magma_queue_t queue );
 
 magma_int_t
+magma_sparilut_gpu_nodp(
+    magma_s_matrix A,
+    magma_s_matrix b,
+    magma_s_preconditioner *precond,
+    magma_queue_t queue );
+
+magma_int_t
 magma_sparilut_insert(
     magma_int_t *num_rmL,
     magma_int_t *num_rmU,
@@ -1414,6 +1421,28 @@ magma_ssampleselect_approx(
     magma_ptr *tmp_ptr,
     magma_int_t *tmp_size,
     magma_queue_t queue );
+
+
+magma_int_t
+magma_ssampleselect_nodp(
+    magma_int_t total_size,
+    magma_int_t subset_size,
+    float *val,
+    float *thrs,
+    magma_ptr *tmp_ptr,
+    magma_int_t *tmp_size,
+    magma_queue_t queue );
+
+magma_int_t
+magma_ssampleselect_approx_nodp(
+    magma_int_t total_size,
+    magma_int_t subset_size,
+    float *val,
+    float *thrs,
+    magma_ptr *tmp_ptr,
+    magma_int_t *tmp_size,
+    magma_queue_t queue );
+
 
 // ISAI preconditioner
 

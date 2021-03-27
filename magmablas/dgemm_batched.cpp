@@ -1,11 +1,11 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
-       @generated from magmablas/zgemm_batched.cpp, normal z -> d, Thu Oct  8 23:05:36 2020
+       @generated from magmablas/zgemm_batched.cpp, normal z -> d, Sat Mar 27 20:31:35 2021
 
        @author Jakub Kurzak
        @author Stan Tomov
@@ -27,6 +27,34 @@
 
 #define PRECISION_d
 
+
+/* on some platforms (i.e. hipMAGMA on ROCm stack), we define custom types
+ *  * So, to keep the C++ compiler from giving errors, we cast arguments to internal
+ *   * BLAS routines. The hipify script should replace `cu*Complex` with appropriate HIP types
+ *    *
+ *     * FUTURE READERS: If hipBLAS changes numbers to `hipblas*Complex` rather than `hip*Complex`,
+ *      *   these will need more complicated macro if/else blocks
+ *       */
+#ifdef PRECISION_z
+  #ifdef HAVE_HIP
+    typedef double BackendFloat_t;
+  #else
+    typedef double BackendFloat_t;
+  #endif
+#elif defined(PRECISION_c)
+  #ifdef HAVE_HIP
+    typedef hipblasComplex BackendFloat_t;
+  #else
+    typedef cuFloatComplex BackendFloat_t;
+  #endif
+#elif defined(PRECISION_d)
+  typedef double BackendFloat_t;
+#else
+  typedef float BackendFloat_t;
+#endif
+
+
+
 void
 magma_dgemm_batched_core(
     magma_trans_t transA, magma_trans_t transB,
@@ -45,9 +73,9 @@ magma_dgemm_batched_core(
             cublasDgemmBatched(
                     queue->cublas_handle(), cublas_trans_const(transA), cublas_trans_const(transB),
                     int(m), int(n), int(k),
-                    &alpha, (const double**)dA_array, int(ldda),
-                            (const double**)dB_array, int(lddb),
-                    &beta,                              dC_array, int(lddc), int(batchCount) );
+                    (BackendFloat_t*)&alpha, (const BackendFloat_t**)dA_array, int(ldda),
+                            (const BackendFloat_t**)dB_array, int(lddb),
+                    (BackendFloat_t*)&beta,  (BackendFloat_t**)dC_array, int(lddc), int(batchCount) );
         }
         else{
             double** dAarray = (double**)queue->get_dAarray();
@@ -62,9 +90,9 @@ magma_dgemm_batched_core(
                 cublasDgemmBatched(
                         queue->cublas_handle(), cublas_trans_const(transA), cublas_trans_const(transB),
                         int(m), int(n), int(k),
-                        &alpha, (const double**)dAarray, int(ldda),
-                                (const double**)dBarray, int(lddb),
-                        &beta,                              dCarray, int(lddc), int(batch) );
+                        (BackendFloat_t*)&alpha, (const BackendFloat_t**)dAarray, int(ldda),
+                                (const BackendFloat_t**)dBarray, int(lddb),
+                        (BackendFloat_t*)&beta,  (BackendFloat_t**)dCarray, int(lddc), int(batch) );
             }
         }
     }

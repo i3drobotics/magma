@@ -1,15 +1,15 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
        
        @author Mark Gates
        @author Tingxing Dong
        @author Azzam Haidar
 
-       @generated from magmablas/zgemv_fermi.cu, normal z -> d, Thu Oct  8 23:05:32 2020
+       @generated from magmablas/zgemv_fermi.cu, normal z -> d, Sat Mar 27 20:31:17 2021
 */
 #include "magma_internal.h"
 #include "commonblas_d.h"
@@ -35,10 +35,10 @@ dgemvn_template_kernel_fermi(
     const double * __restrict__ x, int incx, double beta,
     double       * __restrict__ y, int incy)
 {
-#if (__CUDA_ARCH__ >= 200)
+#if (__CUDA_ARCH__ >= 200) || defined(HAVE_HIP)
     gemvn_template_device<double, DIM_X, DIM_Y, TILE_SIZE>
         (m, n, alpha, A, lda, x, incx, beta, y, incy);
-#endif /* (__CUDA_ARCH__ >= 200) */
+#endif /* (__CUDA_ARCH__ >= 200) || defined(HAVE_HIP) */
 }
 
 
@@ -52,10 +52,10 @@ dgemvc_template_kernel_fermi(
     const double * __restrict__ x, int incx, double beta,
     double       * __restrict__ y, int incy)
 {
-#if (__CUDA_ARCH__ >= 200)
+#if (__CUDA_ARCH__ >= 200) || defined(HAVE_HIP)
     gemvc_template_device< double, DIM_X, DIM_Y, TILE_SIZE, trans >
         (m, n, alpha, A, lda, x, incx, beta, y, incy);
-#endif /* (__CUDA_ARCH__ >= 200) */
+#endif /* (__CUDA_ARCH__ >= 200) || defined(HAVE_HIP) */
 }
 
 

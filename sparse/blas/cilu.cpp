@@ -1,28 +1,37 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
        @author Hartwig Anzt
 
-       @generated from sparse/blas/zilu.cpp, normal z -> c, Thu Oct  8 23:05:50 2020
+       @generated from sparse/blas/zilu.cpp, normal z -> c, Sat Mar 27 20:32:31 2021
 */
 #include "magmasparse_internal.h"
 #include <cuda.h>  // for CUDA_VERSION
 
 #define PRECISION_c
 
+/* For hipSPARSE, they use a separate complex type than for hipBLAS */
+#if defined(HAVE_HIP)
+  #ifdef PRECISION_z
+    #define hipblasComplex hipFloatComplex
+  #elif defined(PRECISION_c)
+    #define hipblasComplex hipComplex
+  #endif
+#endif
+
 // todo: make it spacific
-#if CUDA_VERSION >= 11000 
+#if CUDA_VERSION >= 11000 || defined(HAVE_HIP)
 #define cusparseCreateSolveAnalysisInfo(info) cusparseCreateCsrsm2Info(info) 
 #else
-#define cusparseCreateSolveAnalysisInfo(info)                                                   \ 
+#define cusparseCreateSolveAnalysisInfo(info)                                                   \
         CHECK_CUSPARSE( cusparseCreateSolveAnalysisInfo( info ))
 #endif
 
-#if CUDA_VERSION >= 11000
+#if CUDA_VERSION >= 11000 || defined(HAVE_HIP)
 #define cusparseDestroySolveAnalysisInfo(info) cusparseDestroyCsrsm2Info(info)
 #endif
 
@@ -34,6 +43,7 @@
         cuFloatComplex *B;                                                                     \
         size_t bufsize;                                                                         \
         void *buf;                                                                              \
+        cusparseSetMatType( descrA, CUSPARSE_MATRIX_TYPE_GENERAL );                             \
         cusparseCcsrsm2_bufferSizeExt(handle, 0, op, CUSPARSE_OPERATION_NON_TRANSPOSE,          \
                                       rows, 1, nnz, (const cuFloatComplex *)&alpha,            \
                                       descrA, dval, drow, dcol,                                 \
@@ -47,6 +57,30 @@
         if (bufsize > 0)                                                                        \
            magma_free(buf);                                                                     \
     }
+
+#elif defined(HAVE_HIP)
+#define cusparseCcsrsm_analysis(handle, op, rows, nnz, descrA, dval, drow, dcol, info )         \
+    {                                                                                           \
+        magmaFloatComplex alpha = MAGMA_C_ONE;                                                 \
+        hipFloatComplex *B;                                                                     \
+        size_t bufsize;                                                                         \
+        void *buf;                                                                              \
+        hipsparseCcsrsm2_bufferSizeExt(handle, 0, op, HIPSPARSE_OPERATION_NON_TRANSPOSE,         \
+                                      rows, 1, nnz, (const hipFloatComplex *)&alpha,           \
+                                      descrA, (const hipFloatComplex *)dval, (const int *)drow, (const int *)dcol,  \
+                                      (const hipFloatComplex *)B, rows, info, HIPSPARSE_SOLVE_POLICY_NO_LEVEL, &bufsize); \
+        if (bufsize > 0)                                                                        \
+           magma_malloc(&buf, bufsize);                                                         \
+        hipsparseCcsrsm2_analysis(handle, 0, op, HIPSPARSE_OPERATION_NON_TRANSPOSE,               \
+                                 rows, 1, nnz, (const hipFloatComplex *)&alpha,                 \
+                                 descrA, (const hipFloatComplex *)dval, drow, dcol,            \
+                                 B, rows, info, HIPSPARSE_SOLVE_POLICY_NO_LEVEL, buf);           \
+        if (bufsize > 0)                                                                        \
+           magma_free(buf);                                                                     \
+    }
+
+
+
 #endif
 
 #if CUDA_VERSION >= 11000
@@ -68,22 +102,41 @@
 #endif
 
 
-#if CUDA_VERSION >= 11000
+#if CUDA_VERSION >= 11000 
 #define cusparseCcsrsm_solve(handle, op, rows, cols, nnz, alpha, descrA, dval, drow, dcol,      \
                              info, b, ldb, x, ldx )                                             \
     {                                                                                           \
         size_t bufsize;                                                                         \
         void *buf;                                                                              \
+        cusparseSetMatType( descrA, CUSPARSE_MATRIX_TYPE_GENERAL );                             \
         cusparseCcsrsm2_bufferSizeExt(handle, 0, op, CUSPARSE_OPERATION_NON_TRANSPOSE,          \
                                       rows, cols, nnz, alpha, descrA, dval, drow, dcol,         \
-                                      b, ldb, info, CUSPARSE_SOLVE_POLICY_NO_LEVEL, &bufsize);  \ 
+                                      b, ldb, info, CUSPARSE_SOLVE_POLICY_NO_LEVEL, &bufsize);  \
         magma_malloc(&buf, bufsize);                                                            \
+        magmablas_clacpy( MagmaFull, rows, cols, b, ldb, x, ldx, queue );                       \
         cusparseCcsrsm2_solve(handle, 0, op, CUSPARSE_OPERATION_NON_TRANSPOSE, rows, cols, nnz, \
-                              alpha, descrA, dval, drow, dcol, b, ldb, info,                    \
+                              alpha, descrA, dval, drow, dcol, x, ldx, info,                    \
                               CUSPARSE_SOLVE_POLICY_NO_LEVEL, buf);                             \
+        magma_free(buf);                                                                        \
+    }
+
+#elif defined(HAVE_HIP) 
+#define cusparseCcsrsm_solve(handle, op, rows, cols, nnz, alpha, descrA, dval, drow, dcol,      \
+                             info, b, ldb, x, ldx )                                             \
+    {                                                                                           \
+        size_t bufsize;                                                                         \
+        void *buf;                                                                              \
+        hipsparseCcsrsm2_bufferSizeExt(handle, 0, op, HIPSPARSE_OPERATION_NON_TRANSPOSE,          \
+                                      rows, cols, nnz, (const hipFloatComplex*)alpha, descrA, (const hipFloatComplex*)dval, drow, dcol,         \
+                                      (hipFloatComplex*)b, ldb, info, HIPSPARSE_SOLVE_POLICY_NO_LEVEL, &bufsize);  \
+        magma_malloc(&buf, bufsize);                                                            \
+        hipsparseCcsrsm2_solve(handle, 0, op, HIPSPARSE_OPERATION_NON_TRANSPOSE, rows, cols, nnz, \
+                              (const hipFloatComplex*)alpha, descrA, (const hipFloatComplex*)dval, drow, dcol, (hipFloatComplex*)b, ldb, info,                    \
+                              HIPSPARSE_SOLVE_POLICY_NO_LEVEL, buf);                             \
         magmablas_clacpy( MagmaFull, rows, cols, b, ldb, x, ldx, queue );                       \
         magma_free(buf);                                                                        \
-    }  
+    }
+
 #else
 #define cusparseCcsrsm_solve(handle, op, rows, cols, nnz, alpha, descrA, dval, drow, dcol,      \
                              info, b, ldb, x, ldx )                                             \
@@ -110,6 +163,27 @@
             printf("A(%d,%d) is missing\n", numerical_zero, numerical_zero);                    \
         cusparseCcsric02(handle, rows, nnz, descrA, dval, drow, dcol, linfo,                    \
                          CUSPARSE_SOLVE_POLICY_NO_LEVEL, buf);                                  \
+        if (bufsize > 0)                                                                        \
+           magma_free(buf);                                                                     \
+    }
+#elif defined(HAVE_HIP)
+#define cusparseCcsric0(handle, op, rows, nnz, descrA, dval, drow, dcol, info )                 \
+    {                                                                                           \
+        int bufsize;                                                                            \
+        void *buf;                                                                              \
+        csric02Info_t linfo;                                                                    \
+        hipsparseCreateCsric02Info(&linfo);                                                      \
+        hipsparseCcsric02_bufferSize(handle, rows, nnz, descrA, (hipFloatComplex*)dval, drow, dcol,linfo,&bufsize);\
+        if (bufsize > 0)                                                                        \
+           magma_malloc(&buf, bufsize);                                                         \
+        hipsparseCcsric02_analysis(handle, rows, nnz, descrA, (hipFloatComplex*)dval, drow, dcol, linfo,           \
+                                  HIPSPARSE_SOLVE_POLICY_NO_LEVEL, buf);                         \
+        int numerical_zero;                                                                     \
+        if (HIPSPARSE_STATUS_ZERO_PIVOT ==                                                       \
+            hipsparseXcsric02_zeroPivot( handle, linfo, &numerical_zero ))                       \
+            printf("A(%d,%d) is missing\n", numerical_zero, numerical_zero);                    \
+        hipsparseCcsric02(handle, rows, nnz, descrA, (hipFloatComplex*)dval, drow, dcol, linfo,                    \
+                         HIPSPARSE_SOLVE_POLICY_NO_LEVEL, buf);                                  \
         if (bufsize > 0)                                                                        \
            magma_free(buf);                                                                     \
     } 
@@ -153,7 +227,7 @@ magma_ccumilusetup(
     cusparseMatDescr_t descrA=NULL;
     cusparseMatDescr_t descrL=NULL;
     cusparseMatDescr_t descrU=NULL;
-#if CUDA_VERSION >= 7000
+#if CUDA_VERSION >= 7000 || defined(HAVE_HIP)
     csrilu02Info_t info_M=NULL;
     void *pBuffer = NULL;
 #endif
@@ -190,7 +264,7 @@ magma_ccumilusetup(
     // use kernel to manually check for zeros n the diagonal
     CHECK( magma_cdiagcheck( precond->M, queue ) );
     
-#if CUDA_VERSION >= 7000
+#if CUDA_VERSION >= 7000 
     // this version has the bug fixed where a zero on the diagonal causes a crash
     CHECK_CUSPARSE( cusparseCreateCsrilu02Info(&info_M) );
     int buffersize;
@@ -219,6 +293,38 @@ magma_ccumilusetup(
                          precond->M.num_rows, precond->M.nnz, descrA,
                          precond->M.dval, precond->M.drow, precond->M.dcol,
                          info_M, CUSPARSE_SOLVE_POLICY_NO_LEVEL, pBuffer) );
+
+#elif defined(HAVE_HIP)
+
+    // this version has the bug fixed where a zero on the diagonal causes a crash
+    CHECK_CUSPARSE( hipsparseCreateCsrilu02Info(&info_M) );
+    int buffersize;
+    int structural_zero;
+    int numerical_zero;
+    
+    CHECK_CUSPARSE(
+    hipsparseCcsrilu02_bufferSize( cusparseHandle,
+                         precond->M.num_rows, precond->M.nnz, descrA,
+                         (hipFloatComplex*)precond->M.dval, precond->M.drow, precond->M.dcol,
+                         info_M,
+                         &buffersize ) );
+    
+    CHECK( magma_malloc((void**)&pBuffer, buffersize) );
+
+    CHECK_CUSPARSE( hipsparseCcsrilu02_analysis( cusparseHandle,
+            precond->M.num_rows, precond->M.nnz, descrA,
+            (hipFloatComplex*)precond->M.dval, precond->M.drow, precond->M.dcol,
+            info_M, CUSPARSE_SOLVE_POLICY_NO_LEVEL, pBuffer ));
+    
+    CHECK_CUSPARSE( hipsparseXcsrilu02_zeroPivot( cusparseHandle, info_M, &numerical_zero ) );
+    CHECK_CUSPARSE( hipsparseXcsrilu02_zeroPivot( cusparseHandle, info_M, &structural_zero ) );
+    
+    CHECK_CUSPARSE(
+    hipsparseCcsrilu02( cusparseHandle,
+                         precond->M.num_rows, precond->M.nnz, descrA,
+                         (hipFloatComplex*)precond->M.dval, precond->M.drow, precond->M.dcol,
+                         info_M, HIPSPARSE_SOLVE_POLICY_NO_LEVEL, pBuffer) );
+
 #else
     // this version contains the bug but is needed for backward compability
     cusparseCcsrsm_analysis( cusparseHandle,
@@ -278,20 +384,42 @@ magma_ccumilusetup(
             magma_cmfree(&hU, queue );
             magma_cmtransfer( precond->L, &hL, Magma_DEV, Magma_DEV, queue );
             // conversion using CUSPARSE
+            #ifdef HAVE_HIP
+            hipsparseCcsr2csc(cusparseHandle, hL.num_cols, 
+                             hL.num_rows, hL.nnz,
+                             (hipFloatComplex*)hL.dval, hL.drow, hL.dcol, 
+                             (hipFloatComplex*)precond->L.dval, precond->L.dcol, precond->L.drow,
+                             CUSPARSE_ACTION_NUMERIC,
+                             CUSPARSE_INDEX_BASE_ZERO);
+            #else
             cusparseCcsr2csc(cusparseHandle, hL.num_cols, 
                              hL.num_rows, hL.nnz,
                              hL.dval, hL.drow, hL.dcol, 
                              precond->L.dval, precond->L.dcol, precond->L.drow,
                              CUSPARSE_ACTION_NUMERIC,
                              CUSPARSE_INDEX_BASE_ZERO);
+
+            #endif
+
             magma_cmtransfer( precond->U, &hU, Magma_DEV, Magma_DEV, queue );
             // conversion using CUSPARSE
+
+            #ifdef HAVE_HIP
+            hipsparseCcsr2csc(cusparseHandle, hU.num_cols, 
+                             hU.num_rows, hU.nnz,
+                             (hipFloatComplex*)hU.dval, hU.drow, hU.dcol, 
+                             (hipFloatComplex*)precond->U.dval, precond->U.dcol, precond->U.drow,
+                             CUSPARSE_ACTION_NUMERIC,
+                             CUSPARSE_INDEX_BASE_ZERO);
+            #else
             cusparseCcsr2csc(cusparseHandle, hU.num_cols, 
                              hU.num_rows, hU.nnz,
                              hU.dval, hU.drow, hU.dcol, 
                              precond->U.dval, precond->U.dcol, precond->U.drow,
                              CUSPARSE_ACTION_NUMERIC,
                              CUSPARSE_INDEX_BASE_ZERO);
+            #endif
+
             // set this to be CSC
             precond->U.storage_type = Magma_CSC;
             precond->L.storage_type = Magma_CSC;
@@ -326,7 +454,7 @@ magma_ccumilusetup(
 
     
 cleanup:
-#if CUDA_VERSION >= 7000
+#if CUDA_VERSION >= 7000 || defined(HAVE_HIP)
     magma_free( pBuffer );
     cusparseDestroyCsrilu02Info( info_M );
 #endif

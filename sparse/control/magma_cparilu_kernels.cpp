@@ -1,11 +1,11 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 1.1) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
-       @generated from sparse/control/magma_zparilu_kernels.cpp, normal z -> c, Thu Oct  8 23:05:52 2020
+       @generated from sparse/control/magma_zparilu_kernels.cpp, normal z -> c, Sat Mar 27 20:32:48 2021
        @author Hartwig Anzt
 
 */

@@ -1,11 +1,11 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
-       @generated from magmablas/zlarft_kernels.cu, normal z -> d, Thu Oct  8 23:05:35 2020
+       @generated from magmablas/zlarft_kernels.cu, normal z -> d, Sat Mar 27 20:31:23 2021
        @author Azzam Haidar
 */
 
@@ -16,7 +16,7 @@
 
 #define use_gemm_larft
 
-extern __shared__ double shared_data[];
+//extern __shared__ double shared_data[];
 
 /******************************************************************************/
 static __device__
@@ -24,6 +24,8 @@ void dlarft_gemvcolwise_device(
     int m, double *v, double *tau,
     double *c, int ldc, double *T, int ldt, int step )
 {
+    extern __shared__ double shared_data[];
+
     const int thblk =  blockIdx.x;
     if (thblk > step)
         return;
@@ -192,6 +194,8 @@ dlarft_gemvrowwise_kernel(
     double *v, int ldv,
     double *T, int ldt)
 {
+    extern __shared__ double shared_data[];
+
     double *W =  T +i*ldt;
 
     double *sdata = (double*)shared_data;
@@ -209,6 +213,8 @@ dlarft_gemvrowwise_kernel_batched(
     double **v_array, int ldv,
     double **T_array, int ldt)
 {
+    extern __shared__ double shared_data[];
+    
     int batchid = blockIdx.z;
 
     double *W =  T_array[batchid] +i*ldt;
@@ -275,9 +281,11 @@ dlarft_gemv_loop_inside_device(
     double *v, int ldv,
     double *T, int ldt)
 {
-    int tx = threadIdx.x;
-    int ty = threadIdx.y;
-
+    extern __shared__ double shared_data[];
+    
+    int tx = threadIdx.x; 
+    int ty = threadIdx.y; 
+    
     int incx = 1;
     double *sdata = (double*)shared_data;
 
@@ -419,7 +427,9 @@ dlarft_dtrmv_sm32x32_device(
     int n, int k, double *tau,
     double *Tin, int ldtin,  double *Tout, int ldtout )
 {
-    int tx = threadIdx.x;
+    extern __shared__ double shared_data[];
+    
+    int tx = threadIdx.x; 
     double *sdata = (double*)shared_data;
     double res;
 
@@ -551,7 +561,9 @@ dlarft_recdtrmv_sm32x32_device(
     int m, int n, double *tau,
     double *Trec, int ldtrec, double *Ttri, int ldttri)
 {
-    int tx = threadIdx.x;
+    extern __shared__ double shared_data[];
+    
+    int tx = threadIdx.x; 
     double *sdata = (double*)shared_data;
     double res;
 

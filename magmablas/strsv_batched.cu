@@ -1,14 +1,14 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
        @author Tingxing Dong
        @author Azzam Haidar
 
-       @generated from magmablas/ztrsv_batched.cu, normal z -> s, Thu Oct  8 23:05:38 2020
+       @generated from magmablas/ztrsv_batched.cu, normal z -> s, Sat Mar 27 20:31:40 2021
 */
 
 #include "magma_internal.h"
@@ -32,8 +32,6 @@
 #include "strsv_template_device.cuh"
 
 #define A(i, j)  (A + (i) + (j)*lda)   // A(i, j) means at i row, j column
-
-extern __shared__ float shared_data[];
 
 
 /******************************************************************************/

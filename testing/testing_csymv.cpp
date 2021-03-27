@@ -1,15 +1,15 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
        @author Mark Gates
        
        Note: [ds] precisions generated from testing_chemv.cu
        
-       @generated from testing/testing_zsymv.cpp, normal z -> c, Thu Oct  8 23:05:39 2020
+       @generated from testing/testing_zsymv.cpp, normal z -> c, Sat Mar 27 20:31:49 2021
 */
 #include <stdlib.h>
 #include <stdio.h>
@@ -122,7 +122,7 @@ int main(int argc, char **argv)
             /* =====================================================================
                Performs operation using MAGMABLAS
                =================================================================== */
-            #ifdef HAVE_CUBLAS
+            #if defined(HAVE_CUBLAS) || defined(HAVE_HIP)
                 magma_csetmatrix( N, N, A, lda, dA(0,0), ldda, opts.queue );
                 magma_csetvector( N, X, incx, dX(0), incx, opts.queue );
                 magma_csetvector( N, Y, incy, dY(0), incy, opts.queue );

@@ -1,11 +1,11 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
-       @generated from testing/testing_zgeqrf_gpu.cpp, normal z -> s, Thu Oct  8 23:05:42 2020
+       @generated from testing/testing_zgeqrf_gpu.cpp, normal z -> s, Sat Mar 27 20:32:06 2021
 */
 // includes, system
 #include <stdlib.h>
@@ -115,7 +115,7 @@ int main( int argc, char** argv)
                 // LAPACK complaint arguments
                 magma_sgeqrf2_gpu( M, N, d_A, ldda, tau, &info );
             }
-            #ifdef HAVE_CUBLAS
+            #if defined(HAVE_CUBLAS) || defined(HAVE_HIP)
             else if ( opts.version == 3 ) {
                 // stores dT, V blocks have zeros, R blocks stored in dT
                 magma_sgeqrf3_gpu( M, N, d_A, ldda, tau, dT, &info );
@@ -222,7 +222,7 @@ int main( int argc, char** argv)
                     }
                     magma_free_cpu( hwork );
                 }
-                #ifdef HAVE_CUBLAS
+                #if defined(HAVE_CUBLAS) || defined(HAVE_HIP)
                 else if ( opts.version == 3 ) {
                     // allocate hwork
                     magma_sgeqrs3_gpu( M, N, 1,

@@ -1,16 +1,16 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
        
        ssymv_upper.cu is nearly identical to ssymv_upper.cu, just change names and drop MAGMA_S_CONJ.
        
        ssymv_kernel_U (upper) in ssymv_upper.cu is very similar to
        ssymv_kernel_L (lower) in ssymv.cu; diff the two files to compare.
        
-       @generated from magmablas/zhemv_mgpu_upper.cu, normal z -> s, Thu Oct  8 23:05:36 2020
+       @generated from magmablas/zhemv_mgpu_upper.cu, normal z -> s, Sat Mar 27 20:31:31 2021
        
        @author Mark Gates
 */
@@ -59,7 +59,7 @@ ssymv_kernel_U_mgpu(
     int ngpu,
     int block_offset)
 {
-#if defined(PRECISION_s) || defined(PRECISION_d) || defined(PRECISION_c) || (__CUDA_ARCH__ >= 200)
+#if defined(PRECISION_s) || defined(PRECISION_d) || defined(PRECISION_c) || (__CUDA_ARCH__ >= 200) || defined(HAVE_HIP)
 
     // treats sA as 16x64 block
     #define sA16(i_, j_) (sA[(i_)][(j_)])  // i.e., sA[ (i_)*(NB_X+3) + (j_) ]
@@ -448,7 +448,7 @@ ssymv_kernel_U_mgpu(
               + sA16(3, tx);
         work[blk*NB_X + tx] = total;  //MAGMA_S_MAKE( tx, blk );  // store at work( blk*NB_X + tx, blk )
     }
-#endif  /* PRECISION_[sdc] || (__CUDA_ARCH__ >= 200) */
+#endif  /* PRECISION_[sdc] || (__CUDA_ARCH__ >= 200) || defined(HAVE_HIP) */
 }
 // end ssymv_kernel_U_mgpu
 

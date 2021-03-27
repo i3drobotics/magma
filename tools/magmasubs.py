@@ -150,6 +150,7 @@ blas = [
     ('sscal',          'dscal',          'sscal',          'dscal'           ),
     ('sswap',          'dswap',          'cswap',          'zswap'           ),
     ('ssymm',          'dsymm',          'chemm',          'zhemm'           ),
+    ('ssytrs',         'dsytrs',         'chetrs',         'zhetrs'          ),
     ('ssymm',          'dsymm',          'csymm',          'zsymm'           ),
     ('ssymv',          'dsymv',          'chemv',          'zhemv'           ),
     ('ssymv',          'dsymv',          'csymv',          'zsymv'           ),
@@ -492,7 +493,10 @@ subs = {
     ('real',                 'double precision',     'real',                 'double precision'    ),  # before double
     ('float',                'double',               'float _Complex',       'double _Complex'     ),
     ('float',                'double',               'cuFloatComplex',       'cuDoubleComplex'     ),
+    ('float',                'double',               'hipFloatComplex',      'hipDoubleComplex'    ),
     ('CUDA_R_32F',           'CUDA_R_64F',           'CUDA_C_32F',           'CUDA_C_64F'          ),
+    #('float',                'double',               'hipComplex',           'hipDoubleComplex'   ),
+    ('float',                'double',               'hipblasComplex',       'hipblasDoubleComplex'),
     ('float',                'double',               'MKL_Complex8',         'MKL_Complex16'       ),
     ('magmaFloat_const_ptr', 'magmaDouble_const_ptr','magmaFloatComplex_const_ptr', 'magmaDoubleComplex_const_ptr'),  # before magmaDoubleComplex
     ('magmaFloat_const_ptr', 'magmaDouble_const_ptr','magmaFloat_const_ptr',        'magmaDouble_const_ptr'       ),  # before magmaDoubleComplex
@@ -569,6 +573,8 @@ subs = {
 
     # ----- SPARSE BLAS
     ('cusparseS',      'cusparseD',      'cusparseC',      'cusparseZ'       ),
+    ('hipsparseS',     'hipsparseD',     'hipsparseC',     'hipsparseZ'      ), # hipSPARSE
+
     ('sgeaxpy',        'dgeaxpy',        'cgeaxpy',        'zgeaxpy'         ),
     ('sgedense',       'dgedense',       'cgedense',       'zgedense'        ),
     ('sgecsr',         'dgecsr',         'cgecsr',         'zgecsr'          ),
@@ -703,6 +709,7 @@ subs = {
     ('cublasIs',       'cublasId',       'cublasIs',       'cublasId'        ),
     ('cublasIs',       'cublasId',       'cublasIc',       'cublasIz'        ),
     ('cublasS',        'cublasD',        'cublasC',        'cublasZ'         ),
+    ('hipblasS',       'hipblasD',       'hipblasC',       'hipblasZ'        ), # hipBLAS
     ('clblasiS',       'clblasiD',       'clblasiC',       'clblasiZ'        ),
     ('clblasS',        'clblasD',        'clblasC',        'clblasZ'         ),
     ('example_s',      'example_d',      'example_c',      'example_z'       ),

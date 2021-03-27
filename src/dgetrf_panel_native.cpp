@@ -1,14 +1,14 @@
 /*
-   -- MAGMA (version 2.5.4) --
+   -- MAGMA (version 2.0) --
    Univ. of Tennessee, Knoxville
    Univ. of California, Berkeley
    Univ. of Colorado, Denver
-   @date October 2020
+   @date
 
    @author Azzam Haidar
    @author Tingxing Dong
 
-   @generated from src/zgetrf_panel_native.cpp, normal z -> d, Thu Oct  8 23:05:31 2020
+   @generated from src/zgetrf_panel_native.cpp, normal z -> d, Sat Mar 27 20:31:14 2021
 */
 #include "magma_internal.h"
 
@@ -30,7 +30,7 @@
 
     This is the right-looking Level 3 BLAS version of the algorithm.
 
-    This is a GPU-only routine. The host CPU is not used. 
+    This is a GPU-only routine. The host CPU is not used.
 
     Arguments
     ---------
@@ -86,10 +86,10 @@
 *******************************************************************************/
 extern "C" magma_int_t
 magma_dgetrf_recpanel_native(
-    magma_int_t m, magma_int_t n,    
+    magma_int_t m, magma_int_t n,
     magmaDouble_ptr dA, magma_int_t ldda,
     magma_int_t* dipiv, magma_int_t* dipivinfo,
-    magma_int_t *dinfo, magma_int_t gbstep, 
+    magma_int_t *dinfo, magma_int_t gbstep,
     magma_queue_t queue, magma_queue_t update_queue)
 {
     magma_int_t recpnb = 32;
@@ -104,7 +104,7 @@ magma_dgetrf_recpanel_native(
     }
     else {
         // split A over two [A A2]
-        // panel on A1, update on A2 then panel on A1    
+        // panel on A1, update on A2 then panel on A1
         magma_int_t n1 = n/2;
         magma_int_t n2 = n-n1;
 
@@ -119,18 +119,18 @@ magma_dgetrf_recpanel_native(
         magma_dlaswp_rowserial_native(n2, dA(0,n1), ldda, 0, n1, dipiv, queue);
         #endif
 
-        magma_dtrsm( MagmaLeft, MagmaLower, MagmaNoTrans, MagmaUnit, 
-                     n1, n2, MAGMA_D_ONE, 
-                     dA(0, 0), ldda, 
+        magma_dtrsm( MagmaLeft, MagmaLower, MagmaNoTrans, MagmaUnit,
+                     n1, n2, MAGMA_D_ONE,
+                     dA(0, 0), ldda,
                      dA(0,n1), ldda, queue );
-        magma_dgemm( MagmaNoTrans, MagmaNoTrans, 
-                     m-n1, n2, n1, 
-                     MAGMA_D_NEG_ONE, dA(n1,  0), ldda, 
-                                      dA(0 , n1), ldda, 
+        magma_dgemm( MagmaNoTrans, MagmaNoTrans,
+                     m-n1, n2, n1,
+                     MAGMA_D_NEG_ONE, dA(n1,  0), ldda,
+                                      dA(0 , n1), ldda,
                      MAGMA_D_ONE,     dA(n1, n1), ldda, queue );
 
         // panel on A2
-        magma_dgetrf_recpanel_native(m-n1, n2, dA(n1,n1), ldda, dipiv+n1, dipivinfo+n1, dinfo, n1, queue, update_queue);
+        magma_dgetrf_recpanel_native(m-n1, n2, dA(n1,n1), ldda, dipiv+n1, dipivinfo+n1, dinfo, gbstep+n1, queue, update_queue);
 
         // swap on the right
         #ifdef PARSWAP

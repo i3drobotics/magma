@@ -1,16 +1,16 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
        
        dsymv.cu is nearly identical to dsymv.cu, just change names and drop MAGMA_D_CONJ.
        
        dsymv_kernel_U (upper) in dsymv_upper.cu is very similar to
        dsymv_kernel_L (lower) in dsymv.cu; diff the two files to compare.
        
-       @generated from magmablas/zhemv.cu, normal z -> d, Thu Oct  8 23:05:33 2020
+       @generated from magmablas/zhemv.cu, normal z -> d, Sat Mar 27 20:31:18 2021
        
        @author Mark Gates
 */
@@ -60,7 +60,7 @@ dsymv_kernel_L(
     double const * __restrict__ x, int incx,
     double       * __restrict__ work)
 {
-#if defined(PRECISION_s) || defined(PRECISION_d) || defined(PRECISION_c) || (__CUDA_ARCH__ >= 200)
+#if defined(PRECISION_s) || defined(PRECISION_d) || defined(PRECISION_c) || (__CUDA_ARCH__ >= 200) || defined(HAVE_HIP)
 
     // treats sA as 16x64 block
     #define sA16(i_, j_) (sA[(i_)][(j_)])  // i.e., sA[ (i_)*(NB_X+3) + (j_) ]
@@ -423,7 +423,7 @@ dsymv_kernel_L(
               + sA16(3, tx);
         work[blk*NB_X + tx] = total;  // store at work( blk*NB_X + tx, blk )
     }
-#endif  /* PRECISION_[sdc] || (__CUDA_ARCH__ >= 200) */
+#endif  /* PRECISION_[sdc] || (__CUDA_ARCH__ >= 200) || defined(HAVE_HIP) */
 }
 // end dsymv_kernel_L
 

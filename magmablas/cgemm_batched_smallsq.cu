@@ -1,14 +1,14 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
        @author Ahmad Abdelfattah
        @author Azzam Haidar
 
-       @generated from magmablas/zgemm_batched_smallsq.cu, normal z -> c, Thu Oct  8 23:05:36 2020
+       @generated from magmablas/zgemm_batched_smallsq.cu, normal z -> c, Sat Mar 27 20:31:35 2021
 */
 
 #include "magma_internal.h"
@@ -17,7 +17,6 @@
 
 #define SLDA(N)    ( (N==15||N==23||N==31)? N : (N+1) )
 
-extern __shared__ magmaFloatComplex zdata[];
 template<int N>
 __global__ void
 cgemm_batched_smallsq_kernel(
@@ -27,6 +26,8 @@ cgemm_batched_smallsq_kernel(
         const magmaFloatComplex beta,  magmaFloatComplex**               dC_array, int ci, int cj, int lddc, 
         const int batchCount)
 {
+    extern __shared__ magmaFloatComplex zdata[];
+
     const int tx = threadIdx.x;
     const int ty = threadIdx.y;
     const int tz = threadIdx.z;

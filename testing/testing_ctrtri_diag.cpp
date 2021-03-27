@@ -1,11 +1,11 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
-       @generated from testing/testing_ztrtri_diag.cpp, normal z -> c, Thu Oct  8 23:05:40 2020
+       @generated from testing/testing_ztrtri_diag.cpp, normal z -> c, Sat Mar 27 20:31:56 2021
 */
 // includes, system
 #include <stdlib.h>

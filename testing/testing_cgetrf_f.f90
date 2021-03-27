@@ -1,11 +1,11 @@
 !
-!   -- MAGMA (version 2.5.4) --
+!   -- MAGMA (version 2.0) --
 !      Univ. of Tennessee, Knoxville
 !      Univ. of California, Berkeley
 !      Univ. of Colorado, Denver
-!      @date October 2020
+!      @date
 !
-!  @generated from testing/testing_zgetrf_f.f90, normal z -> c, Thu Oct  8 23:05:46 2020
+!  @generated from testing/testing_zgetrf_f.f90, normal z -> c, Sat Mar 27 20:32:22 2021
 !
       program testing_cgetrf_f
 

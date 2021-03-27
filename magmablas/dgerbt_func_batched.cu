@@ -1,11 +1,11 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
-       @generated from magmablas/zgerbt_func_batched.cu, normal z -> d, Thu Oct  8 23:05:36 2020
+       @generated from magmablas/zgerbt_func_batched.cu, normal z -> d, Sat Mar 27 20:31:36 2021
 
        @author Adrien Remy
        @author Azzam Haidar

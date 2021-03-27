@@ -1,9 +1,9 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
        @precisions normal z -> s d c
        @author Mark Gates
@@ -133,7 +133,7 @@ int main( int argc, char** argv)
                 //magmablas_ztranspose( M-2, N-2, d_A(1,1), ldda, d_B(1,1), lddb, opts.queue );  // inset by 1 row & col
                 magmablas_ztranspose( M, N, d_A(0,0), ldda, d_B(0,0), lddb, opts.queue );
             }
-            #ifdef HAVE_CUBLAS
+            #if defined(HAVE_CUBLAS) || defined(HAVE_HIP)
             else {
                 //magmablas_ztranspose_conj( M-2, N-2, d_A(1,1), ldda, d_B(1,1), lddb, opts.queue );  // inset by 1 row & col
                 magmablas_ztranspose_conj( M, N, d_A(0,0), ldda, d_B(0,0), lddb, opts.queue );
@@ -153,7 +153,7 @@ int main( int argc, char** argv)
                     //magmablas_ztranspose_inplace( N-2, d_A(1,1), ldda, opts.queue );  // inset by 1 row & col
                     magmablas_ztranspose_inplace( N, d_A(0,0), ldda, opts.queue );
                 }
-                #ifdef HAVE_CUBLAS
+                #if defined(HAVE_CUBLAS) || defined(HAVE_HIP)
                 else {
                     //magmablas_ztranspose_conj_inplace( N-2, d_A(1,1), ldda, opts.queue );  // inset by 1 row & col
                     magmablas_ztranspose_conj_inplace( N, d_A(0,0), ldda, opts.queue );

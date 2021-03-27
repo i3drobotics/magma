@@ -1,9 +1,9 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
        @author Stan Tomov
        @precisions normal z -> s d c
@@ -184,7 +184,7 @@ magma_zgegqr_gpu(
             for (k=0; k < n; k++) {
                 vt = VT + k*n;
                 for (j=0; j < n; j++)
-                    vt[j] *= S[j];
+                    vt[j] = vt[j] * S[j];
             }
             lapackf77_zgeqrf( &n, &n, VT, &n, tau, hwork, &lwork, info );
             

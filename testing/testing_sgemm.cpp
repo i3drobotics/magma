@@ -1,11 +1,11 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
-       @generated from testing/testing_zgemm.cpp, normal z -> s, Thu Oct  8 23:05:38 2020
+       @generated from testing/testing_zgemm.cpp, normal z -> s, Sat Mar 27 20:31:47 2021
        @author Mark Gates
 */
 // includes, system
@@ -66,8 +66,8 @@ int main( int argc, char** argv)
     // Allow 3*eps; real needs 2*sqrt(2) factor; see Higham, 2002, sec. 3.6.
     float eps = lapackf77_slamch("E");
     float tol = 3*eps;
-
-    #ifdef HAVE_CUBLAS
+    
+    #if defined(HAVE_CUBLAS) || defined(HAVE_HIP)
         // for CUDA, we can check MAGMA vs. CUBLAS, without running LAPACK
         printf("%% If running lapack (option --lapack), MAGMA and %s error are both computed\n"
                "%% relative to CPU BLAS result. Else, MAGMA error is computed relative to %s result.\n\n",
@@ -145,7 +145,7 @@ int main( int argc, char** argv)
             /* =====================================================================
                Performs operation using MAGMABLAS (currently only with CUDA)
                =================================================================== */
-            #ifdef HAVE_CUBLAS
+            #if defined(HAVE_CUBLAS) || defined(HAVE_HIP)
                 magma_ssetmatrix( M, N, hC, ldc, dC, lddc, opts.queue );
                 
                 magma_flush_cache( opts.cache );
@@ -209,7 +209,7 @@ int main( int argc, char** argv)
                 dev_error = lapackf77_slange( "F", &M, &N, hCdev, &ldc, work )
                             / (sqrt(float(K+2))*fabs(alpha)*Anorm*Bnorm + 2*fabs(beta)*Cnorm);
                 
-                #ifdef HAVE_CUBLAS
+                #if defined(HAVE_CUBLAS) || defined(HAVE_HIP)
                     blasf77_saxpy( &sizeC, &c_neg_one, hC, &ione, hCmagma, &ione );
                     magma_error = lapackf77_slange( "F", &M, &N, hCmagma, &ldc, work )
                             / (sqrt(float(K+2))*fabs(alpha)*Anorm*Bnorm + 2*fabs(beta)*Cnorm);
@@ -235,7 +235,8 @@ int main( int argc, char** argv)
                 #endif
             }
             else {
-                #ifdef HAVE_CUBLAS
+                #if defined(HAVE_CUBLAS) || defined(HAVE_HIP)
+
                     // use cuBLAS for R_ref (currently only with CUDA)
                     blasf77_saxpy( &sizeC, &c_neg_one, hCdev, &ione, hCmagma, &ione );
                     magma_error = lapackf77_slange( "F", &M, &N, hCmagma, &ldc, work )

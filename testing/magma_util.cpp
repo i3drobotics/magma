@@ -1,9 +1,9 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
        @author Mark Gates
 
@@ -33,6 +33,9 @@
 
 #elif defined(HAVE_MIC)
     const char* g_platform_str = "Xeon Phi";
+
+#elif defined(HAVE_HIP)
+    const char* g_platform_str = "HIP";
 
 #else
     #error "unknown platform"

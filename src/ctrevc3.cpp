@@ -1,14 +1,14 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
        
        @author Mark Gates
        @author Azzam Haidar
        
-       @generated from src/ztrevc3.cpp, normal z -> c, Thu Oct  8 23:05:31 2020
+       @generated from src/ztrevc3.cpp, normal z -> c, Sat Mar 27 20:31:03 2021
 */
 #include "magma_timer.h"
 
@@ -307,7 +307,7 @@ magma_int_t magma_ctrevc3(
             // Solve upper triangular system:
             // [ T(1:ki-1,1:ki-1) - T(ki,ki) ]*X = scale*work.
             for( k=0; k < ki; ++k ) {
-                *T(k,k) -= *T(ki,ki);
+                *T(k,k) = *T(k, k) - *T(ki,ki);
                 if ( MAGMA_C_ABS1( *T(k,k) ) < smin ) {
                     *T(k,k) = MAGMA_C_MAKE( smin, 0. );
                 }
@@ -433,7 +433,7 @@ magma_int_t magma_ctrevc3(
             // Solve conjugate-transposed triangular system:
             // [ T(ki+1:n,ki+1:n) - T(ki,ki) ]**H * X = scale*work.
             for( k = ki + 1; k < n; ++k ) {
-                *T(k,k) -= *T(ki,ki);
+                *T(k,k) = *T(k, k) - *T(ki,ki);
                 if ( MAGMA_C_ABS1( *T(k,k) ) < smin ) {
                     *T(k,k) = MAGMA_C_MAKE( smin, 0. );
                 }

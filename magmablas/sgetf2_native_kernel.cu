@@ -1,14 +1,14 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
        @author Azzam Haidar
        @author Ahmad Abdelfattah
 
-       @generated from magmablas/zgetf2_native_kernel.cu, normal z -> s, Thu Oct  8 23:05:37 2020
+       @generated from magmablas/zgetf2_native_kernel.cu, normal z -> s, Sat Mar 27 20:31:34 2021
 */
 
 #include "magma_internal.h"
@@ -63,10 +63,13 @@ sgetf2_native_kernel( int m, int n,
     float rA[NPAGES] = {MAGMA_S_ZERO};
     float rx, rx_max;
     magmaFloat_ptr da = dA;
-    int rx_id, max_id, flag = 0;
+    int rx_id, max_id, flag = 0, linfo;
     float  rx_abs = 0.0, rx_abs_max = 0.0;
     const int m_ = m-(NPAGES-1)*TX;
     if( bx >= n ) return;
+
+    // read the info (if it is set to non-zero a previous panel, then we don't set it again)
+    linfo = (int)(*info);
 
     __shared__ float sx[ TX ];
     __shared__ float sabs[ TX ];
@@ -140,7 +143,7 @@ sgetf2_native_kernel( int m, int n,
             if(tx == 0){
                 sx[ 0 ] = rx_max;
                 sabs[ 0 ] = rx_abs_max;
-                smax_id[ 0 ] = max_id;
+                smax_id[ 0 ] = (rx_abs_max == MAGMA_D_ZERO) ? i : max_id;
             }
             __syncthreads();
             rx_max = sx[ 0 ];
@@ -149,14 +152,14 @@ sgetf2_native_kernel( int m, int n,
             __syncthreads();
 
             // now every thread in the i^th block has the maximum
+            linfo = (rx_abs_max == MAGMA_D_ZERO && linfo == 0) ? (max_id+gbstep+1) : linfo;
             if( tx == 0){
-                if( rx_abs_max == MAGMA_D_ZERO){
-                    magmablas_iatomic_exchange( (magma_int_t*)info, (magma_int_t)(max_id + gbstep + 1) );
-                }
+                //printf("[%2d]: bx = %d, max_id, = %d, rx_abs_max = %f, linfo = %d\n", i, bx, max_id, rx_abs_max, linfo);
+                magmablas_iatomic_exchange((magma_int_t*)info, (magma_int_t)(linfo) );
                 magmablas_iatomic_exchange((magma_int_t*)&ipiv[i], (magma_int_t)(max_id+1) ); // fortran indexing
             }
             __syncthreads();
-            if( rx_abs_max == MAGMA_D_ZERO )return;
+            //if( rx_abs_max == MAGMA_D_ZERO )return;
         }
         else{ // other thread blocks are waiting
             if(tx == 0){
@@ -169,8 +172,9 @@ sgetf2_native_kernel( int m, int n,
             __syncthreads();
             max_id = smax_id[ 0 ];
             max_id -= 1; // revert fortran indexing
+            linfo = (*info);
             __syncthreads();
-            if( (*info) != 0 ) return;
+            //if( (*info) != 0 ) return;
         }
 
         // swap
@@ -203,7 +207,7 @@ sgetf2_native_kernel( int m, int n,
 
         // the ith block does scal
         if(bx == i){
-            float reg = MAGMA_S_DIV(MAGMA_S_ONE, rx_max );
+            float reg = (rx_max == MAGMA_S_ZERO) ? MAGMA_S_ONE : MAGMA_S_DIV(MAGMA_S_ONE, rx_max );
             // scal
             if( tx > i ){
                 rA[0] *= reg;
@@ -312,7 +316,8 @@ magma_sgetf2_native_fused(
     magma_int_t shmem = magma_getdevice_shmem_block();
     shmem = (shmem / 2);
     int *update_flag = (int*) flags;    // update_flag is an int, not magma_int_t
-    sgetf2_native_init_kernel<<< 1, max(n,npages), 0, queue->cuda_stream() >>>( n, npages, ipiv, update_flag);
+    size_t max_n_npages = max(n,npages);
+    sgetf2_native_init_kernel<<< 1, max_n_npages, 0, queue->cuda_stream() >>>( n, npages, ipiv, update_flag);
     // The case statement should cover up to ( xGETF2_CHAIN_MAX_M / ntx )
     switch(npages){
         case  1: sgetf2_native_kernel< ntx,  1><<<grid, threads, shmem, queue->cuda_stream() >>>( m, n, dA, ldda, ipiv, gbstep, update_flag, info); break;

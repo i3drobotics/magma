@@ -1,9 +1,9 @@
 #//////////////////////////////////////////////////////////////////////////////
-#   -- MAGMA (version 2.5.4) --
+#   -- MAGMA (version 2.0) --
 #      Univ. of Tennessee, Knoxville
 #      Univ. of California, Berkeley
 #      Univ. of Colorado, Denver
-#      @date October 2020
+#      @date
 #//////////////////////////////////////////////////////////////////////////////
 
 # push previous directory
@@ -27,7 +27,6 @@ libmagma_src += \
 	$(cdir)/abs.cpp			\
 	$(cdir)/affinity.cpp		\
 	$(cdir)/auxiliary.cpp		\
-	$(cdir)/connection_mgpu.cpp	\
 	$(cdir)/constants.cpp		\
 	$(cdir)/get_batched_crossover.cpp	\
 	$(cdir)/get_batched_gemm_decision.cpp	\

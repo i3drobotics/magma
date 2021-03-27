@@ -1,17 +1,16 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
        
        @author Azzam Haidar
        @author Tingxing Dong
        @author Ahmad Abdelfattah
 
-       @generated from src/zpotrf_batched.cpp, normal z -> c, Thu Oct  8 23:05:31 2020
+       @generated from src/zpotrf_batched.cpp, normal z -> c, Sat Mar 27 20:31:11 2021
 */
-#include <cuda_runtime.h>
 
 #include "magma_internal.h"
 #include "batched_kernel_param.h"
@@ -193,7 +192,7 @@ magma_cpotrf_batched(
     magma_int_t *info_array,  magma_int_t batchCount, 
     magma_queue_t queue)
 {
-    cudaMemset(info_array, 0, batchCount*sizeof(magma_int_t));
+    magma_memset(info_array, 0, batchCount*sizeof(magma_int_t));
     magma_int_t arginfo = 0;
     
     if ( uplo != MagmaUpper && uplo != MagmaLower) {

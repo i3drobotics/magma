@@ -1,11 +1,11 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
-       @generated from src/zgeqlf.cpp, normal z -> c, Thu Oct  8 23:05:26 2020
+       @generated from src/zgeqlf.cpp, normal z -> c, Sat Mar 27 20:30:42 2021
 
 */
 #include "magma_internal.h"

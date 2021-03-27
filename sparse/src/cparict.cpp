@@ -1,13 +1,13 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
        @author Hartwig Anzt
 
-       @generated from sparse/src/zparict.cpp, normal z -> c, Thu Oct  8 23:05:55 2020
+       @generated from sparse/src/zparict.cpp, normal z -> c, Sat Mar 27 20:33:05 2021
 */
 
 #include "magmasparse_internal.h"
@@ -17,8 +17,15 @@
 
 #define PRECISION_c
 
+
+/* For hipSPARSE, they use a separate complex type than for hipBLAS */
+#ifdef HAVE_HIP
+  #define hipblasComplex hipFloatComplex
+#endif
+
+
 // todo: make it spacific  
-#if CUDA_VERSION >= 11000
+#if CUDA_VERSION >= 11000 || defined(HAVE_HIP)
 #define cusparseCreateSolveAnalysisInfo(info) {;}
 #else
 #define cusparseCreateSolveAnalysisInfo(info)                                                   \
@@ -26,7 +33,7 @@
 #endif
 
 // todo: info is passed; buf has to be passed 
-#if CUDA_VERSION >= 11000
+#if CUDA_VERSION >= 11000 || defined(HAVE_HIP)
 #define cusparseCcsrsv_analysis(handle, trans, m, nnz, descr, val, row, col, info)              \
     {                                                                                           \
         csrsv2Info_t linfo = 0;                                                                 \
@@ -45,7 +52,7 @@
 #endif
 
 // todo: check the info and linfo if we have to give it back; free memory?   
-#if CUDA_VERSION >= 11000
+#if CUDA_VERSION >= 11000 || defined(HAVE_HIP)
 #define cusparseCcsrsm_analysis(handle, op, rows, nnz, descrA, dval, drow, dcol, info )         \
     {                                                                                           \
         magmaFloatComplex alpha = MAGMA_C_ONE;                                                 \
@@ -265,7 +272,7 @@ magma_cparict(
     cusparseCcsrsv_analysis( cusparseHandle,
                              CUSPARSE_OPERATION_NON_TRANSPOSE, precond->M.num_rows,
                              precond->M.nnz, descrL,
-                             precond->M.dval, precond->M.drow, precond->M.dcol, 
+                             (cuFloatComplex*)precond->M.dval, precond->M.drow, precond->M.dcol, 
                              precond->cuinfoL );
     
     // upper triangular factor
@@ -278,7 +285,7 @@ magma_cparict(
     cusparseCcsrsm_analysis( cusparseHandle,
                              CUSPARSE_OPERATION_TRANSPOSE, precond->M.num_rows,
                              precond->M.nnz, descrU,
-                             precond->M.dval, precond->M.drow, precond->M.dcol, 
+                             (cuFloatComplex*)precond->M.dval, precond->M.drow, precond->M.dcol, 
                              precond->cuinfoU );
     
     

@@ -1,18 +1,18 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
-       @generated from sparse/control/magma_zfree.cpp, normal z -> d, Thu Oct  8 23:05:51 2020
+       @generated from sparse/control/magma_zfree.cpp, normal z -> d, Sat Mar 27 20:32:39 2021
        @author Hartwig Anzt
 */
 #include "magmasparse_internal.h"
 
 // todo: see how to destroy info
 // there are different, e.g., cusparseDestroyCsrsv2Info(info), etc.
-#if CUDA_VERSION >= 11000
+#if CUDA_VERSION >= 11000 || defined(HAVE_HIP)
 #define cusparseDestroySolveAnalysisInfo(info) {;}
 #endif
 

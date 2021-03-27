@@ -1,11 +1,11 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
-       @generated from testing/testing_zswap.cpp, normal z -> d, Thu Oct  8 23:05:41 2020
+       @generated from testing/testing_zswap.cpp, normal z -> d, Sat Mar 27 20:31:56 2021
        @author Mark Gates
 */
 // includes, system
@@ -252,7 +252,7 @@ int main( int argc, char** argv)
              * dswapblk, blocked version (2 matrices)
              */
             
-            #ifdef HAVE_CUBLAS
+            #if defined(HAVE_CUBLAS) || defined(HAVE_HIP)
                 /* Row Major */
                 init_matrix( N, N, h_A1, lda, 0 );
                 init_matrix( N, N, h_A2, lda, 100 );

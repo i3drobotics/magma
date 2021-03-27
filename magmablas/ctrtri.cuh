@@ -1,11 +1,11 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
-       @generated from magmablas/ztrtri.cuh, normal z -> c, Thu Oct  8 23:05:56 2020
+       @generated from magmablas/ztrtri.cuh, normal z -> c, Sat Mar 27 20:33:20 2021
 
        @author Peng Du
        @author Tingxing Dong
@@ -19,6 +19,9 @@
 #define CTRTRI_H
 
 #define PRECISION_c 
+
+// define 0 for large initializations
+#define Z0 MAGMA_C_ZERO
 
 #include "batched_kernel_param.h"
 #if   defined(TRTRI_BATCHED)
@@ -72,7 +75,7 @@ cgemm_kernel_16(
     
     // compute NT x 16 block of C
     // each thread computes one 1x16 row, C(id,0:15)
-    magmaFloatComplex rC[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    magmaFloatComplex rC[16] = {Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0};
     magmaFloatComplex rA[4];
 
     do {
@@ -93,7 +96,7 @@ cgemm_kernel_16(
         rA[2] = A[2*lda];
         rA[3] = A[3*lda];
 
-        // axpy:  C(id,:) += A(id,k) * B(k,:) for k=0, ..., 15
+        // axpy:  C(id,:) += A(id,k) * B(k,:) for k={0,0}, ..., 15
         caxpy16( rA[0], &sB[ 0][0], rC );  rA[0] = A[ 4*lda];
         caxpy16( rA[1], &sB[ 1][0], rC );  rA[1] = A[ 5*lda];
         caxpy16( rA[2], &sB[ 2][0], rC );  rA[2] = A[ 6*lda];

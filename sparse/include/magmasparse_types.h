@@ -1,9 +1,9 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 1.1) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 */
 
 #ifndef MAGMASPARSE_TYPES_H
@@ -23,6 +23,52 @@
 
 // includes CUDA
 #include <cusparse_v2.h>
+
+
+/* (author: Cade Brown <cbrow216@vols.utk.edu>
+ *
+ * There have been changes to cuSPARSE in 10.2, specifically many removed hybrid formatting/partitioning, some
+ *   solvers, solve analysis, and sparse BLAS (doti, srmm, ...). So, those must be fixed in the cuSPARSE version.
+ *
+ * As a result, these functionalities are not even included as deprecated features in hipSPARSE, they are excluded entirely.
+ *
+ * In the future, `MAGMA_USE_SOLVEANALYSIS` and similar switches should default to 'off', once the cuSPARSE backend is fixed
+ *
+ *
+ */
+
+// if defined, use the cusparseSolveAnalysisInfo_t structures & functionality
+//#define MAGMA_USE_SOLVEANALYSIS
+
+#if   defined(HAVE_CUDA)
+// for now, enable, but this has been deprecated
+// eventually this should be disabled by default
+#define MAGMA_USE_SOLVEANALYSIS
+#elif defined(HAVE_HIP)
+
+#define MAGMA_USE_SOLVEANALYSIS
+#endif
+
+
+
+/* Currently unsupported hipsparse functions
+ *
+ * (these should be added in ROCm 3.5, or otherwise pretty soon)
+ *
+ *
+ */
+#if defined(HAVE_HIP)
+
+// this macro allows you to define an unsupported function (primarily from hipSPARSE)
+// which will become a NOOP, and print an error message
+#define magma_unsupported_sparse(fname) ((hipsparseStatus_t)(fprintf(stderr, "MAGMA: Unsupported (sparse) function '" #fname "'\n"), HIPSPARSE_STATUS_INTERNAL_ERROR))
+
+
+#define hipsparseZcsrmv(...) magma_unsupported_sparse(hipsparseZcsrmv)
+#define hipsparseZbsrmv(...) magma_unsupported_sparse(hipsparseZcsrmv)
+#define hipsparseZcsrmm(...) magma_unsupported_sparse(hipsparseZcsrmm)
+
+#endif
 
 
 
@@ -563,6 +609,9 @@ typedef struct magma_s_solver_par
 #else
     #define magma_solve_info_t csrsm2Info_t
 #endif
+#if defined(HAVE_HIP)
+    #define hipsparseSolveAnalysisInfo_t csrsm2Info_t
+#endif
 
 typedef struct magma_z_preconditioner
 {
@@ -609,11 +658,14 @@ typedef struct magma_z_preconditioner
     magma_index_t*            L_dgraphindegree_bak; // for sync-free trisolve
     magma_index_t*            U_dgraphindegree;     // for sync-free trisolve
     magma_index_t*            U_dgraphindegree_bak; // for sync-free trisolve
+    
+    /* was merge conflict, assume master */
     magma_solve_info_t cuinfo;
     magma_solve_info_t cuinfoL;
     magma_solve_info_t cuinfoLT;
     magma_solve_info_t cuinfoU;
     magma_solve_info_t cuinfoUT;
+    
     magma_bool_t            transpose;                 // need the transpose for the solver?
 #if defined(HAVE_PASTIX)
     pastix_data_t*          pastix_data;
@@ -667,11 +719,15 @@ typedef struct magma_c_preconditioner
     magma_index_t*            L_dgraphindegree_bak; // for sync-free trisolve
     magma_index_t*            U_dgraphindegree;     // for sync-free trisolve
     magma_index_t*            U_dgraphindegree_bak; // for sync-free trisolve
+    
+
     magma_solve_info_t cuinfo;
     magma_solve_info_t cuinfoL;
     magma_solve_info_t cuinfoLT;
     magma_solve_info_t cuinfoU;
     magma_solve_info_t cuinfoUT;
+    
+    
     magma_bool_t            transpose;                 // need the transpose for the solver?
 #if defined(HAVE_PASTIX)
     pastix_data_t*          pastix_data;
@@ -726,11 +782,13 @@ typedef struct magma_d_preconditioner
     magma_index_t*            L_dgraphindegree_bak; // for sync-free trisolve
     magma_index_t*            U_dgraphindegree;     // for sync-free trisolve
     magma_index_t*            U_dgraphindegree_bak; // for sync-free trisolve
+
     magma_solve_info_t cuinfo;
     magma_solve_info_t cuinfoL;
     magma_solve_info_t cuinfoLT;
     magma_solve_info_t cuinfoU;
     magma_solve_info_t cuinfoUT;
+    
     magma_bool_t            transpose;                 // need the transpose for the solver?
 #if defined(HAVE_PASTIX)
     pastix_data_t*          pastix_data;
@@ -785,11 +843,13 @@ typedef struct magma_s_preconditioner
     magma_index_t*            L_dgraphindegree_bak; // for sync-free trisolve
     magma_index_t*            U_dgraphindegree;     // for sync-free trisolve
     magma_index_t*            U_dgraphindegree_bak; // for sync-free trisolve
+    
     magma_solve_info_t cuinfo;
     magma_solve_info_t cuinfoL;
     magma_solve_info_t cuinfoLT;
     magma_solve_info_t cuinfoU;
     magma_solve_info_t cuinfoUT;
+    
     magma_bool_t            transpose;                 // need the transpose for the solver?
 #if defined(HAVE_PASTIX)
     pastix_data_t*          pastix_data;

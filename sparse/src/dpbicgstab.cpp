@@ -1,11 +1,11 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
-       @generated from sparse/src/zpbicgstab.cpp, normal z -> d, Thu Oct  8 23:05:53 2020
+       @generated from sparse/src/zpbicgstab.cpp, normal z -> d, Sat Mar 27 20:32:59 2021
        @author Hartwig Anzt
 
 */
@@ -118,7 +118,7 @@ magma_dpbicgstab(
         solver_par->res_vec[0] = nom0;
         solver_par->timing[0] = 0.0;
     }
-    if ( nomb < r0 ) {
+    if ( nom0 < r0 ) {
         info = MAGMA_SUCCESS;
         goto cleanup;
     }

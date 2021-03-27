@@ -1,11 +1,11 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
-       @generated from sparse/control/magma_zmtranspose.cpp, normal z -> c, Thu Oct  8 23:05:51 2020
+       @generated from sparse/control/magma_zmtranspose.cpp, normal z -> c, Sat Mar 27 20:32:43 2021
        @author Hartwig Anzt
        @author Mark Gates
 
@@ -14,19 +14,24 @@
 
 #include <cuda.h>  // for CUDA_VERSION
 
+/* For hipSPARSE, they use a separate complex type than for hipBLAS */
+#ifdef HAVE_HIP
+  #define hipblasComplex hipFloatComplex
+#endif
+
 // todo: check if we need buf later
 #if CUDA_VERSION >= 11000
-#define cusparseCcsr2csc(handle, m, n, nnz, valA, rowA, colA, valB, rowB, colB,                \
+#define cusparseCcsr2csc(handle, m, n, nnz, valA, rowA, colA, valB, colB, rowB,                \
                          action, base)                                                         \
     {                                                                                          \
         size_t bufsize;                                                                        \
         void *buf;                                                                             \
         cusparseCsr2cscEx2_bufferSize(handle, m, n, nnz, valA, rowA, colA,                     \
-                                      valB, rowB, colB, CUDA_C_32F, action, base,              \
+                                      valB, colB, rowB, CUDA_C_32F, action, base,              \
                                       CUSPARSE_CSR2CSC_ALG1, &bufsize);                        \
         if (bufsize > 0)                                                                       \
            magma_malloc(&buf, bufsize);                                                        \
-        cusparseCsr2cscEx2(handle, m, n, nnz, valA, rowA, colA, valB, rowB, colB,              \
+        cusparseCsr2cscEx2(handle, m, n, nnz, valA, rowA, colA, valB, colB, rowB,              \
                            CUDA_C_32F, action, base, CUSPARSE_CSR2CSC_ALG1, buf);              \
         if (bufsize > 0)                                                                       \
            magma_free(buf);                                                                    \
@@ -319,7 +324,7 @@ magma_c_cucsrtranspose(
         CHECK_CUSPARSE( cusparseSetMatIndexBase( descrA, CUSPARSE_INDEX_BASE_ZERO ));
         CHECK_CUSPARSE( cusparseSetMatIndexBase( descrB, CUSPARSE_INDEX_BASE_ZERO ));
         cusparseCcsr2csc( handle, A.num_rows, A.num_cols, A.nnz,
-                          A.dval, A.drow, A.dcol, B->dval, B->dcol, B->drow,
+                          (cuFloatComplex*)A.dval, A.drow, A.dcol, (cuFloatComplex*)B->dval, B->dcol, B->drow,
                           CUSPARSE_ACTION_NUMERIC,
                           CUSPARSE_INDEX_BASE_ZERO);
     } else if ( A.storage_type == Magma_CSR && A.memory_location == Magma_CPU ){
@@ -427,7 +432,7 @@ magma_cmtransposeconjugate(
         CHECK_CUSPARSE( cusparseSetMatIndexBase( descrA, CUSPARSE_INDEX_BASE_ZERO ));
         CHECK_CUSPARSE( cusparseSetMatIndexBase( descrB, CUSPARSE_INDEX_BASE_ZERO ));
         cusparseCcsr2csc( handle, A.num_rows, A.num_cols, A.nnz,
-                          A.dval, A.drow, A.dcol, B->dval, B->dcol, B->drow,
+                          (cuFloatComplex*)A.dval, A.drow, A.dcol, (cuFloatComplex*)B->dval, B->dcol, B->drow,
                           CUSPARSE_ACTION_NUMERIC,
                           CUSPARSE_INDEX_BASE_ZERO);
         CHECK( magma_cmconjugate( B, queue ));

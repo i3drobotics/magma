@@ -1,11 +1,11 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
-       @generated from sparse/src/magma_z_precond_wrapper.cpp, normal z -> c, Thu Oct  8 23:05:56 2020
+       @generated from sparse/src/magma_z_precond_wrapper.cpp, normal z -> c, Sat Mar 27 20:33:07 2021
        @author Hartwig Anzt
 
 */
@@ -197,7 +197,12 @@ magma_c_precondsetup(
     
     else if ( precond->solver == Magma_PARILUT ) {
         #ifdef _OPENMP
+        /* Here, use No-Dynamic-Parallelism vresion or normal version depending on platform */
+            #ifdef HAVE_HIP
+            info = magma_cparilut_gpu_nodp(A, b, precond, queue);
+            #else
             info = magma_cparilut_gpu( A, b, precond, queue );
+            #endif
             if ( precond->trisolver == Magma_ISAI  ||
                 precond->trisolver == Magma_JACOBI ||
                 precond->trisolver == Magma_VBJACOBI ){

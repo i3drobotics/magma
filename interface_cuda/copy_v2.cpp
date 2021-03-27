@@ -1,9 +1,9 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
        @author Mark Gates
 */
@@ -12,7 +12,7 @@
 
 #include <cuda_runtime.h>
 
-#ifdef HAVE_CUBLAS
+#if defined(HAVE_CUBLAS) || defined(HAVE_HIP)
 
 // Generic, type-independent routines to copy data.
 // Type-safe versions which avoid the user needing sizeof(...) are in headers;

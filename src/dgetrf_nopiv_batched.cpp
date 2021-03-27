@@ -1,16 +1,15 @@
 /*
-   -- MAGMA (version 2.5.4) --
+   -- MAGMA (version 2.0) --
    Univ. of Tennessee, Knoxville
    Univ. of California, Berkeley
    Univ. of Colorado, Denver
-   @date October 2020
+   @date
 
    @author Azzam Haidar
    @author Adrien Remy
 
-   @generated from src/zgetrf_nopiv_batched.cpp, normal z -> d, Thu Oct  8 23:05:30 2020
+   @generated from src/zgetrf_nopiv_batched.cpp, normal z -> d, Sat Mar 27 20:31:09 2021
  */
-#include <cuda_runtime.h>
 
 #include "magma_internal.h"
 #include "batched_kernel_param.h"
@@ -83,7 +82,7 @@ magma_dgetrf_nopiv_batched(
 #define dAarray(i_, j_)    dA_array, i_, j_
    
     magma_int_t min_mn = min(m, n);
-    cudaMemset(info_array, 0, batchCount*sizeof(magma_int_t));
+    magma_memset(info_array, 0, batchCount*sizeof(magma_int_t));
 
     /* Check arguments */
     magma_int_t arginfo = 0;

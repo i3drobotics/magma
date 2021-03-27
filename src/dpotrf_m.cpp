@@ -1,15 +1,13 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
-       @generated from src/zpotrf_m.cpp, normal z -> d, Thu Oct  8 23:05:23 2020
+       @generated from src/zpotrf_m.cpp, normal z -> d, Sat Mar 27 20:30:32 2021
 
 */
-#include <cuda_runtime.h>
-
 #include "magma_internal.h"
 
 //#include "../testing/flops.h"
@@ -137,7 +135,7 @@ magma_dpotrf_m(
 
     /* figure out NB */
     size_t freeMem, totalMem;
-    cudaMemGetInfo( &freeMem, &totalMem );
+    magma_mem_info(&freeMem, &totalMem);
     freeMem /= sizeof(double);
     
     //MB = n;  /* number of rows in the big panel    */

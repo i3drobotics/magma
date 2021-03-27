@@ -1,16 +1,16 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
-       @generated from sparse/blas/zgeellrtmv.cu, normal z -> c, Thu Oct  8 23:05:46 2020
+       @generated from sparse/blas/zgeellrtmv.cu, normal z -> c, Sat Mar 27 20:32:24 2021
 
 */
 #include "magmasparse_internal.h"
 
-//F. Vázquez, G. Ortega, J.J. Fernández, E.M. Garzón, Almeria University
+//F. Vazquez, G. Ortega, J.J. Fernandez, E.M. Garzon, Almeria University
 __global__ void 
 cgeellrtmv_kernel_32( 
     int num_rows, 
@@ -62,7 +62,7 @@ cgeellrtmv_kernel_32(
     }
 }
 
-//F. Vázquez, G. Ortega, J.J. Fernández, E.M. Garzón, Almeria University
+//F. Vazquez, G. Ortega, J.J. Fernandez, E.M. Garzon, Almeria University
 __global__ void 
 cgeellrtmv_kernel_16( 
     int num_rows, 
@@ -113,7 +113,7 @@ cgeellrtmv_kernel_16(
     }
 }
 
-//F. Vázquez, G. Ortega, J.J. Fernández, E.M. Garzón, Almeria University
+//F. Vazquez, G. Ortega, J.J. Fernandez, E.M. Garzon, Almeria University
 __global__ void 
 cgeellrtmv_kernel_8( 
     int num_rows, 

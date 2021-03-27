@@ -1,17 +1,16 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
        @author Azzam Haidar
        @author Stan Tomov
 
-       @generated from src/zhetrd_he2hb_mgpu.cpp, normal z -> d, Thu Oct  8 23:05:30 2020
+       @generated from src/zhetrd_he2hb_mgpu.cpp, normal z -> d, Sat Mar 27 20:30:58 2021
 
 */
-#include <cuda_runtime.h>
 
 #include "magma_internal.h"
 #include "magma_bulge.h"
@@ -278,8 +277,8 @@ magma_dsytrd_sy2sb_mgpu(
         dwork[dev]    = dw[dev]      + nb*lddw;
         dworkbis[dev] = dwork[dev]   + nb*ldda;
         for( i = 0; i < nevents; ++i ) {
-            cudaEventCreateWithFlags( &events[dev][i], cudaEventDisableTiming );
-            //magma_create_event( &events[dev][i] );
+            //cudaEventCreateWithFlags( &events[dev][i], cudaEventDisableTiming );
+            magma_event_create_untimed( &events[dev][i] );
         }
     }
 

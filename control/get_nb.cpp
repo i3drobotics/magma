@@ -1,9 +1,9 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
        @author Stan Tomov
        @author Mark Gates
@@ -16,8 +16,9 @@
 extern "C" {
 #endif
 
+// TODO: also add some for AMD cards
 // Definition of blocking sizes for NVIDIA cards
-#ifdef HAVE_CUBLAS
+//#ifdef HAVE_CUBLAS
 
 // =============================================================================
 /// @addtogroup magma_tuning
@@ -1498,7 +1499,7 @@ magma_int_t magma_get_zbulge_mgpu_nb( magma_int_t n )
 /// @}
 // end group magma_tuning
 
-#endif  // HAVE_CUBLAS
+//#endif  // HAVE_CUBLAS
 
 #ifdef __cplusplus
 } // extern "C"

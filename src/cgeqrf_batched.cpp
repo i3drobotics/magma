@@ -1,16 +1,15 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
        
        @author Azzam Haidar
        @author Tingxing Dong
 
-       @generated from src/zgeqrf_batched.cpp, normal z -> c, Thu Oct  8 23:05:31 2020
+       @generated from src/zgeqrf_batched.cpp, normal z -> c, Sat Mar 27 20:31:13 2021
 */
-#include <cuda_runtime.h>
 
 #include "magma_internal.h"
 #include "batched_kernel_param.h"
@@ -122,7 +121,7 @@ magma_cgeqrf_batched(
         return magma_cgeqrf_batched_smallsq( m, dA_array, ldda, dtau_array, info_array, batchCount, queue );
     }
 
-    cudaMemset(info_array, 0, batchCount*sizeof(magma_int_t));
+    magma_memset(info_array, 0, batchCount*sizeof(magma_int_t));
 
     magmaFloatComplex *dT        = NULL;
     magmaFloatComplex *dR        = NULL;

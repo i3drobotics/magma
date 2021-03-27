@@ -1,14 +1,14 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
        
        @author Azzam Haidar
        @author Ichi Yamazaki
 
-       @generated from src/zpotrf_mgpu_right.cpp, normal z -> d, Thu Oct  8 23:05:24 2020
+       @generated from src/zpotrf_mgpu_right.cpp, normal z -> d, Sat Mar 27 20:30:30 2021
 
 */
 #ifndef MAGMA_NO_V1

@@ -1,14 +1,27 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
-       @generated from sparse/blas/zparilut_kernels.cu, normal z -> c, Thu Oct  8 23:05:49 2020
+       @generated from sparse/blas/zparilut_kernels.cu, normal z -> c, Sat Mar 27 20:32:32 2021
 
 */
 #include "magmasparse_internal.h"
+
+
+/* Runtime API (this comment caused odd issues with hipify scripts) 
+ *
+ * cudaFuncCachePreferShared: shared memory is 48 KB
+ * cudaFuncCachePreferEqual: shared memory is 32 KB
+ * cudaFuncCachePreferL1: shared memory is 16 KB
+ * cudaFuncCachePreferNone: no preference
+ *
+ * (spaces are added to prevent expansion from the script from messing up)
+ * cudaFunc Set CacheConfig(cudaFuncCache PreferShared);
+ */
+
 
 #define PRECISION_c
 
@@ -205,13 +218,7 @@ magma_cparilut_sweep_gpu(
     dim3 grid2( dimgrid21, dimgrid22, dimgrid23 );
     dim3 block2( blocksize1, blocksize2, 1 );
 
-    // Runtime API
-    // cudaFuncCachePreferShared: shared memory is 48 KB
-    // cudaFuncCachePreferEqual: shared memory is 32 KB
-    // cudaFuncCachePreferL1: shared memory is 16 KB
-    // cudaFuncCachePreferNone: no preference
-    //cudaFuncSetCacheConfig(cudaFuncCachePreferShared);
-
+    // Runtime API (see top of file)
     cudaDeviceSetCacheConfig( cudaFuncCachePreferL1 );
 
     magma_cparilut_L_kernel<<< grid1, block1, 0, queue->cuda_stream() >>>
@@ -348,12 +355,7 @@ magma_cparilut_residuals_gpu(
     dim3 grid1( dimgrid11, dimgrid12, dimgrid13 );
     dim3 block1( blocksize1, blocksize2, 1 );
    
-    // Runtime API
-    // cudaFuncCachePreferShared: shared memory is 48 KB
-    // cudaFuncCachePreferEqual: shared memory is 32 KB
-    // cudaFuncCachePreferL1: shared memory is 16 KB
-    // cudaFuncCachePreferNone: no preference
-    //cudaFuncSetCacheConfig(cudaFuncCachePreferShared);
+    // Runtime API (see top of file)
 
     cudaDeviceSetCacheConfig( cudaFuncCachePreferL1 );
 

@@ -1,14 +1,14 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 1.1) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
        
        @author Hartwig Anzt
        @author Goran Flegar
 
-       @generated from sparse/blas/zgeisai_batched32.cu, normal z -> d, Thu Oct  8 23:05:50 2020
+       @generated from sparse/blas/zgeisai_batched32.cu, normal z -> d, Sat Mar 27 20:32:37 2021
 
 */
 #include "magmasparse_internal.h"

@@ -1,16 +1,16 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
        Originally translated from lapack slaln2.f to slaln2.c using f2c.
        Later cleaned up by hand, particularly to be thread-safe (no static variables).
 
        @author Mark Gates
 
-       @generated from src/dlaln2.cpp, normal d -> s, Thu Oct  8 23:05:30 2020
+       @generated from src/dlaln2.cpp, normal d -> s, Sat Mar 27 20:31:03 2021
 */
 #include "magma_internal.h"
 

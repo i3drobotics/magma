@@ -1,9 +1,9 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
        
        @author Azzam Haidar
        @author Ahmad Abdelfattah
@@ -16,7 +16,7 @@ extern "C" {
 #endif
 
 // Definition of blocking sizes for NVIDIA cards
-#ifdef HAVE_CUBLAS
+#if defined(HAVE_CUBLAS) || defined(HAVE_HIP)
 
 // =============================================================================
 /// @addtogroup magma_tuning

@@ -1,11 +1,11 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
-       @generated from testing/testing_zlaset.cpp, normal z -> s, Thu Oct  8 23:05:39 2020
+       @generated from testing/testing_zlaset.cpp, normal z -> s, Sat Mar 27 20:31:54 2021
        @author Mark Gates
 */
 
@@ -57,8 +57,8 @@ int main( int argc, char** argv)
             // 1     0        3.14
             // 2     1.23     0
             // 3     1.23     3.14
-            offdiag = MAGMA_S_MAKE( 1.2345, 6.7890 ) * (ival / 2);
-            diag    = MAGMA_S_MAKE( 3.1415, 2.7183 ) * (ival % 2);
+            offdiag = MAGMA_S_MAKE( 1.2345, 6.7890 ) * (float)(ival / 2);
+            diag    = MAGMA_S_MAKE( 3.1415, 2.7183 ) * (float)(ival % 2);
             
             M = opts.msize[itest];
             N = opts.nsize[itest];

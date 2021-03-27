@@ -1,14 +1,14 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
        @author Ichitaro Yamazaki                                                                   
        @author Adrien Remy
        
-       @generated from src/zsytrf_nopiv_cpu.cpp, normal z -> c, Thu Oct  8 23:05:26 2020
+       @generated from src/zsytrf_nopiv_cpu.cpp, normal z -> c, Sat Mar 27 20:30:48 2021
        
  
 */
@@ -70,7 +70,7 @@ magma_int_t csyrk_d(
                 Dkk = D;
                 Akj = A+j;
                 for (k=0; k < n; k++) {
-                    tmp += (*Aik) * (*Dkk) * ( *Akj );
+                    tmp = tmp + (*Aik) * (*Dkk) * ( *Akj );
                     Aik += lda; 
                     Dkk += incD; 
                     Akj += lda;
@@ -84,7 +84,7 @@ magma_int_t csyrk_d(
             for (i=0; i <= j; i++) {
                 magmaFloatComplex tmp = MAGMA_C_ZERO;
                 for (k=0; k < n; k++) {
-                    tmp += A(i, k) * D( k ) * A(k, j);
+                    tmp = tmp + A(i, k) * D( k ) * A(k, j);
                 }
                 C(i, j) = beta * C(i, j) + alpha * tmp;
             }

@@ -1,11 +1,11 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
-       @generated from sparse/blas/zcompact.cu, normal z -> d, Thu Oct  8 23:05:49 2020
+       @generated from sparse/blas/zcompact.cu, normal z -> d, Sat Mar 27 20:32:34 2021
        @author Stan Tomov
 */
 #include "magmasparse_internal.h"

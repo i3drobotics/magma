@@ -1,9 +1,9 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
        @author Ahmad Abdelfattah
        @author Azzam Haidar
@@ -18,7 +18,6 @@
 #define PRECISION_z
 #define SLDA(N)    ( (N==15||N==23||N==31)? N : (N+1) )
 
-extern __shared__ magmaDoubleComplex zdata[];
 //-----------------------------------------------------------------------------
 __global__ void
 zherk_small_reduce_scale_beta_kernel(magma_uplo_t uplo, int N, magmaDoubleComplex beta, magmaDoubleComplex* dC, int lddc)
@@ -47,6 +46,8 @@ zherk_small_reduce_kernel(
         const magmaDoubleComplex alpha, magmaDoubleComplex *dA, const int ldda, 
         magmaDoubleComplex *dC, const int lddc, const int nthread_blocks)
 {
+    extern __shared__ magmaDoubleComplex zdata[];
+    
     const int tx = threadIdx.x;
     const int ty = threadIdx.y;
     const int tz = threadIdx.z;

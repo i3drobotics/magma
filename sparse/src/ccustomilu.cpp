@@ -1,20 +1,25 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
        @author Hartwig Anzt
 
-       @generated from sparse/src/zcustomilu.cpp, normal z -> c, Thu Oct  8 23:05:55 2020
+       @generated from sparse/src/zcustomilu.cpp, normal z -> c, Sat Mar 27 20:33:02 2021
 */
 #include "magmasparse_internal.h"
 
 #define COMPLEX
 
+/* For hipSPARSE, they use a separate complex type than for hipBLAS */
+#ifdef HAVE_HIP
+  #define hipblasComplex hipFloatComplex
+#endif
+
 // todo: make it spacific
-#if CUDA_VERSION >= 11000
+#if CUDA_VERSION >= 11000 || defined(HAVE_HIP)
 #define cusparseCreateSolveAnalysisInfo(info) {;}
 #else
 #define cusparseCreateSolveAnalysisInfo(info)                                                   \
@@ -22,18 +27,18 @@
 #endif
 
 // todo: info is passed; buf has to be passed
-#if CUDA_VERSION >= 11000
+#if CUDA_VERSION >= 11000 || defined(HAVE_HIP)
 #define cusparseCcsrsv_analysis(handle, trans, m, nnz, descr, val, row, col, info)              \
     {                                                                                           \
         csrsv2Info_t linfo = 0;                                                                 \
         int bufsize;                                                                            \
         void *buf;                                                                              \
         cusparseCreateCsrsv2Info(&linfo);                                                       \
-        cusparseCcsrsv2_bufferSize(handle, trans, m, nnz, descr, val, row, col,                 \
+        cusparseCcsrsv2_bufferSize(handle, trans, m, nnz, descr, (cuFloatComplex*)val, row, col,                 \
                                    linfo, &bufsize);                                            \
         if (bufsize > 0)                                                                        \
            magma_malloc(&buf, bufsize);                                                         \
-        cusparseCcsrsv2_analysis(handle, trans, m, nnz, descr, val, row, col, linfo,            \
+        cusparseCcsrsv2_analysis(handle, trans, m, nnz, descr, (cuFloatComplex*)val, row, col, linfo,            \
                                  CUSPARSE_SOLVE_POLICY_USE_LEVEL, buf);                         \
         if (bufsize > 0)                                                                        \
            magma_free(buf);                                                                     \
@@ -118,7 +123,7 @@ magma_ccustomilusetup(
     cusparseCcsrsv_analysis( cusparseHandle,
                              CUSPARSE_OPERATION_NON_TRANSPOSE, precond->L.num_rows,
                              precond->L.nnz, descrL,
-                             precond->L.val, precond->L.row, precond->L.col, 
+                             (cuFloatComplex*)precond->L.val, precond->L.row, precond->L.col, 
                              precond->cuinfoL );
     
     
@@ -131,7 +136,7 @@ magma_ccustomilusetup(
     cusparseCcsrsv_analysis( cusparseHandle,
                              CUSPARSE_OPERATION_NON_TRANSPOSE, precond->U.num_rows,
                              precond->U.nnz, descrU,
-                             precond->U.val, precond->U.row, precond->U.col, 
+                             (cuFloatComplex*)precond->U.val, precond->U.row, precond->U.col, 
                              precond->cuinfoU );
 
     

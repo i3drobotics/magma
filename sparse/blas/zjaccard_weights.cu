@@ -1,9 +1,9 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
        @author Hartwig Anzt
 
@@ -125,7 +125,8 @@ magma_zjaccard_weights(
     // cudaFuncCachePreferEqual: shared memory is 32 KB
     // cudaFuncCachePreferL1: shared memory is 16 KB
     // cudaFuncCachePreferNone: no preference
-    //cudaFuncSetCacheConfig(cudaFuncCachePreferShared);
+    // (spaces are added to prevent expansion from the script from messing up)
+    // cudaFunc Set CacheConfig(cudaFuncCache PreferShared);
 
     cudaDeviceSetCacheConfig( cudaFuncCachePreferL1 );
 

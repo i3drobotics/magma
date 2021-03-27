@@ -1,11 +1,11 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
-       @generated from magmablas/zgetf2.cu, normal z -> s, Thu Oct  8 23:05:35 2020
+       @generated from magmablas/zgetf2.cu, normal z -> s, Sat Mar 27 20:31:32 2021
 */
 #include "magma_internal.h"
 
@@ -171,13 +171,15 @@ void magma_sgetf2_swap(
 /******************************************************************************/
 // dynamically allocated shared memory, set to size n when the kernel is launched.
 // See CUDA Guide B.2.3
-extern __shared__ float shared_data[];
+//extern __shared__ float shared_data[];
 
 
 /******************************************************************************/
 __global__
 void kernel_sscal_sger(int m, int n, float *A, int lda)
 {
+    extern __shared__ float shared_data[];
+
     float *shared_y = shared_data;
 
     int tid = blockIdx.x * sger_bs + threadIdx.x;

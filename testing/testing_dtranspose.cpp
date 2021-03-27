@@ -1,11 +1,11 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
-       @generated from testing/testing_ztranspose.cpp, normal z -> d, Thu Oct  8 23:05:40 2020
+       @generated from testing/testing_ztranspose.cpp, normal z -> d, Sat Mar 27 20:31:56 2021
        @author Mark Gates
 
 */
@@ -133,7 +133,7 @@ int main( int argc, char** argv)
                 //magmablas_dtranspose( M-2, N-2, d_A(1,1), ldda, d_B(1,1), lddb, opts.queue );  // inset by 1 row & col
                 magmablas_dtranspose( M, N, d_A(0,0), ldda, d_B(0,0), lddb, opts.queue );
             }
-            #ifdef HAVE_CUBLAS
+            #if defined(HAVE_CUBLAS) || defined(HAVE_HIP)
             else {
                 //magmablas_dtranspose( M-2, N-2, d_A(1,1), ldda, d_B(1,1), lddb, opts.queue );  // inset by 1 row & col
                 magmablas_dtranspose( M, N, d_A(0,0), ldda, d_B(0,0), lddb, opts.queue );
@@ -153,7 +153,7 @@ int main( int argc, char** argv)
                     //magmablas_dtranspose_inplace( N-2, d_A(1,1), ldda, opts.queue );  // inset by 1 row & col
                     magmablas_dtranspose_inplace( N, d_A(0,0), ldda, opts.queue );
                 }
-                #ifdef HAVE_CUBLAS
+                #if defined(HAVE_CUBLAS) || defined(HAVE_HIP)
                 else {
                     //magmablas_dtranspose_inplace( N-2, d_A(1,1), ldda, opts.queue );  // inset by 1 row & col
                     magmablas_dtranspose_inplace( N, d_A(0,0), ldda, opts.queue );

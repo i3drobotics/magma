@@ -1,14 +1,14 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
        @author Azzam Haidar
        @author Ahmad Abdelfattah
 
-       @generated from magmablas/zgetf2_nopiv_kernels.cu, normal z -> d, Thu Oct  8 23:05:38 2020
+       @generated from magmablas/zgetf2_nopiv_kernels.cu, normal z -> d, Sat Mar 27 20:31:40 2021
 */
 
 #include "magma_internal.h"
@@ -19,7 +19,7 @@
 
 // This kernel uses registers for matrix storage, shared mem. for communication.
 // It also uses lazy swap.
-extern __shared__ double zdata[];
+//extern __shared__ double zdata[];
 
 template<int N>
 __device__ void
@@ -77,12 +77,13 @@ dgetf2_nopiv_device(int m, double* dA, int ldda, magma_int_t *info, const int tx
 }
 
 /******************************************************************************/
-extern __shared__ double zdata[];
 template<int N, int NPOW2>
 __global__ void
 dgetf2_nopiv_batched_kernel( int m, double** dA_array, int ai, int aj, int ldda, 
                              magma_int_t* info_array, int gbstep, int batchCount)
 {
+    extern __shared__ double zdata[];
+
     const int tx = threadIdx.x;
     const int ty = threadIdx.y;
     const int batchid = blockIdx.x * blockDim.y + ty;

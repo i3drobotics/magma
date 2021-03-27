@@ -1,11 +1,11 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
-       @generated from src/dgeev_m.cpp, normal d -> s, Thu Oct  8 23:05:30 2020
+       @generated from src/dgeev_m.cpp, normal d -> s, Sat Mar 27 20:31:04 2021
        @author Stan Tomov
        @author Mark Gates
 */

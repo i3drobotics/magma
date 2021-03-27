@@ -1,14 +1,14 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
        @author Ahmad Abdelfattah
        @author Azzam Haidar
 
-       @generated from magmablas/zherk_small_reduce.cu, normal z -> d, Thu Oct  8 23:05:33 2020
+       @generated from magmablas/zherk_small_reduce.cu, normal z -> d, Sat Mar 27 20:31:19 2021
 */
 
 #include "magma_internal.h"
@@ -18,7 +18,6 @@
 #define PRECISION_d
 #define SLDA(N)    ( (N==15||N==23||N==31)? N : (N+1) )
 
-extern __shared__ double zdata[];
 //-----------------------------------------------------------------------------
 __global__ void
 dsyrk_small_reduce_scale_beta_kernel(magma_uplo_t uplo, int N, double beta, double* dC, int lddc)
@@ -47,6 +46,8 @@ dsyrk_small_reduce_kernel(
         const double alpha, double *dA, const int ldda, 
         double *dC, const int lddc, const int nthread_blocks)
 {
+    extern __shared__ double zdata[];
+    
     const int tx = threadIdx.x;
     const int ty = threadIdx.y;
     const int tz = threadIdx.z;

@@ -1,14 +1,14 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
        @author Ahmad Abdelfattah
        @author Azzam Haidar
 
-       @generated from magmablas/zherk_small_reduce.cu, normal z -> c, Thu Oct  8 23:05:33 2020
+       @generated from magmablas/zherk_small_reduce.cu, normal z -> c, Sat Mar 27 20:31:19 2021
 */
 
 #include "magma_internal.h"
@@ -18,7 +18,6 @@
 #define PRECISION_c
 #define SLDA(N)    ( (N==15||N==23||N==31)? N : (N+1) )
 
-extern __shared__ magmaFloatComplex zdata[];
 //-----------------------------------------------------------------------------
 __global__ void
 cherk_small_reduce_scale_beta_kernel(magma_uplo_t uplo, int N, magmaFloatComplex beta, magmaFloatComplex* dC, int lddc)
@@ -47,6 +46,8 @@ cherk_small_reduce_kernel(
         const magmaFloatComplex alpha, magmaFloatComplex *dA, const int ldda, 
         magmaFloatComplex *dC, const int lddc, const int nthread_blocks)
 {
+    extern __shared__ magmaFloatComplex zdata[];
+    
     const int tx = threadIdx.x;
     const int ty = threadIdx.y;
     const int tz = threadIdx.z;

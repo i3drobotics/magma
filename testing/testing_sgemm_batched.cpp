@@ -1,11 +1,11 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
-       @generated from testing/testing_zgemm_batched.cpp, normal z -> s, Thu Oct  8 23:05:45 2020
+       @generated from testing/testing_zgemm_batched.cpp, normal z -> s, Sat Mar 27 20:32:15 2021
        @author Mark Gates
        @author Azzam Haidar
        @author Tingxing Dong
@@ -176,22 +176,46 @@ int main( int argc, char** argv)
             cublas_time = magma_sync_wtime( opts.queue );
 
             if(opts.version == 1){
-                cublasSgemmBatched(opts.handle, cublas_trans_const(opts.transA), cublas_trans_const(opts.transB),
+                #ifdef HAVE_CUBLAS
+                  cublasSgemmBatched(
+                                   opts.handle, cublas_trans_const(opts.transA), cublas_trans_const(opts.transB),
                                    int(M), int(N), int(K),
                                    (const float*)&alpha,
                                    (const float**) d_A_array, int(ldda),
                                    (const float**) d_B_array, int(lddb),
                                    (const float*)&beta,
                                    (float**)d_C_array, int(lddc), int(batchCount) );
+                #else
+                  hipblasSgemmBatched(
+                                   opts.handle, cublas_trans_const(opts.transA), cublas_trans_const(opts.transB),
+                                   int(M), int(N), int(K),
+                                   (const float*)&alpha,
+                                   (const float**) d_A_array, int(ldda),
+                                   (const float**) d_B_array, int(lddb),
+                                   (const float*)&beta,
+                                   (float**)d_C_array, int(lddc), int(batchCount) );
+                #endif
             }
             else{
-                cublasSgemmStridedBatched(opts.handle, cublas_trans_const(opts.transA), cublas_trans_const(opts.transB),
+                #ifdef HAVE_CUBLAS
+                cublasSgemmStridedBatched(
+                                   opts.handle, cublas_trans_const(opts.transA), cublas_trans_const(opts.transB),
                                    int(M), int(N), int(K),
                                    (const float*)&alpha,
                                    (const float*) d_A, int(ldda), ldda * An,
                                    (const float*) d_B, int(lddb), lddb * Bn,
                                    (const float*)&beta,
                                    (float*)d_C, int(lddc), lddc*N, int(batchCount) );
+                #else
+                hipblasSgemmStridedBatched(
+                                   opts.handle, cublas_trans_const(opts.transA), cublas_trans_const(opts.transB),
+                                   int(M), int(N), int(K),
+                                   (const float*)&alpha,
+                                   (const float*) d_A, int(ldda), ldda * An,
+                                   (const float*) d_B, int(lddb), lddb * Bn,
+                                   (const float*)&beta,
+                                   (float*)d_C, int(lddc), lddc*N, int(batchCount) );
+                #endif
             }
 
             cublas_time = magma_sync_wtime( opts.queue ) - cublas_time;

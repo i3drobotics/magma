@@ -1,9 +1,9 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
        @author Ahmad Abdelfattah
        @author Azzam Haidar
@@ -17,7 +17,6 @@
 
 #define SLDA(N)    ( (N==15||N==23||N==31)? N : (N+1) )
 
-extern __shared__ magmaDoubleComplex zdata[];
 template<int N>
 __global__ void
 zgemm_batched_smallsq_kernel(
@@ -27,6 +26,8 @@ zgemm_batched_smallsq_kernel(
         const magmaDoubleComplex beta,  magmaDoubleComplex**               dC_array, int ci, int cj, int lddc, 
         const int batchCount)
 {
+    extern __shared__ magmaDoubleComplex zdata[];
+
     const int tx = threadIdx.x;
     const int ty = threadIdx.y;
     const int tz = threadIdx.z;

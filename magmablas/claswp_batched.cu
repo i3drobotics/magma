@@ -1,11 +1,11 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
-       @generated from magmablas/zlaswp_batched.cu, normal z -> c, Thu Oct  8 23:05:38 2020
+       @generated from magmablas/zlaswp_batched.cu, normal z -> c, Sat Mar 27 20:31:38 2021
 
        @author Azzam Haidar
        @author Tingxing Dong
@@ -16,8 +16,8 @@
 #define BLK_SIZE 256
 #define CLASWP_COL_NTH 32
 // SWP_WIDTH is number of threads in a block
-// 64 and 256 are better on Kepler;
-extern __shared__ magmaFloatComplex shared_data[];
+// 64 and 256 are better on Kepler; 
+//extern __shared__ magmaFloatComplex shared_data[];
 
 
 /******************************************************************************/
@@ -28,6 +28,8 @@ void claswp_rowparallel_devfunc(
                               magmaFloatComplex *dout, int ldo,
                               magma_int_t* pivinfo)
 {
+    extern __shared__ magmaFloatComplex shared_data[];
+
     //int height = k2- k1;
     //int height = blockDim.x;
     unsigned int tid = threadIdx.x;
@@ -250,8 +252,9 @@ magma_claswp_rowserial_batched(magma_int_t n, magmaFloatComplex** dA_array, magm
         magma_int_t ibatch = min(max_batchCount, batchCount-i);
         dim3  grid(blocks, 1, ibatch);
 
+        magma_int_t max_BLK_SIZE__n = max(BLK_SIZE, n);
         claswp_rowserial_kernel_batched
-        <<< grid, max(BLK_SIZE, n), 0, queue->cuda_stream() >>>
+        <<< grid, max_BLK_SIZE__n, 0, queue->cuda_stream() >>>
         (n, dA_array+i, lda, k1, k2, ipiv_array+i);
     }
 }
@@ -271,8 +274,9 @@ magma_claswp_rowserial_native(magma_int_t n, magmaFloatComplex_ptr dA, magma_int
     int blocks = magma_ceildiv( n, BLK_SIZE );
     dim3  grid(blocks, 1, 1);
 
+    size_t max_BLK_SIZE_n = max(BLK_SIZE, n);
     claswp_rowserial_kernel_native
-        <<< grid, max(BLK_SIZE, n), 0, queue->cuda_stream() >>>
+        <<< grid, max_BLK_SIZE_n, 0, queue->cuda_stream() >>>
         (n, dA, lda, k1, k2, dipiv);
 }
 
@@ -360,15 +364,16 @@ magma_claswp_columnserial_batched(magma_int_t n, magmaFloatComplex** dA_array, m
     if (n == 0 ) return;
 
     int blocks = magma_ceildiv( n, CLASWP_COL_NTH );
-
+    
     magma_int_t max_batchCount = queue->get_maxBatch();
 
     for(magma_int_t i = 0; i < batchCount; i+=max_batchCount) {
         magma_int_t ibatch = min(max_batchCount, batchCount-i);
         dim3  grid(blocks, 1, ibatch);
-
+        
+        magma_int_t min_CLASWP_COL_NTH__n = min(CLASWP_COL_NTH, n);
         claswp_columnserial_kernel_batched
-        <<< grid, min(CLASWP_COL_NTH,n), 0, queue->cuda_stream() >>>
+        <<< grid, min_CLASWP_COL_NTH__n, 0, queue->cuda_stream() >>>
         (n, dA_array+i, lda, k1, k2, ipiv_array+i);
     }
 }

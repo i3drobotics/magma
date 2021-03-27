@@ -1,11 +1,11 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
-       @generated from magmablas/zgemm_reduce.cu, normal z -> d, Thu Oct  8 23:05:31 2020
+       @generated from magmablas/zgemm_reduce.cu, normal z -> d, Sat Mar 27 20:31:17 2021
 
 */
 #include "magma_internal.h"
@@ -33,7 +33,7 @@ void dgemm_reduce_kernel(
     double beta,
     double      * __restrict__ dC, int ldc)
 {
-#if (__CUDA_ARCH__ >= 200)
+#if (__CUDA_ARCH__ >= 200) || defined(HAVE_HIP)
     const int tx = threadIdx.x;
     
     if (blockIdx.x*BLK_M + threadIdx.y < m && blockIdx.y*BLK_N + threadIdx.z < n) {
@@ -113,6 +113,9 @@ magmablas_dgemm_reduce(
     }
     
     magma_int_t arch = magma_getdevice_arch();
+
+    // if HIP, always assume other method
+    #ifndef HAVE_HIP
     if ( arch < 200  ) {
         // --------------------
         // call CUDA ARCH 1.x -- maximum 512 threads
@@ -123,7 +126,9 @@ magmablas_dgemm_reduce(
         dgemm_reduce_kernel<BLK_K> <<< blocks, threads, 0, queue->cuda_stream() >>>
             ( m, n, k, alpha, dA, ldda, dB, lddb, beta, dC, lddc );
     }
-    else {
+    else 
+    #endif /* HAVE_HIP */
+    {
         // --------------------
         // call CUDA ARCH 2.x -- maximum 1024 threads
         const int NUM_THREADS = 1024;

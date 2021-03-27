@@ -1,9 +1,9 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
        @author Ahmad Abdelfattah
        @author Mark Gates
@@ -13,7 +13,14 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
+
+#if HAVE_CUDA
 #include <cuda_fp16.h>
+#endif
+
+#if HAVE_HIP
+#include <hip/hip_fp16.h>
+#endif
 
 // includes, project
 #include "flops.h"
@@ -22,7 +29,7 @@
 #include "magma_operators.h"
 #include "testings.h"
 
-#if CUDA_VERSION < 9020
+#if CUDA_VERSION < 9020 // or HAVE_HIP 
 // conversion float to half are not defined for host in CUDA version <9.2
 // thus uses the conversion below when CUDA VERSION is < 9.2.
 #include <string.h>
@@ -89,7 +96,7 @@ union FP16
 // infinity and doesn't round correctly. Handle with care.
 // Approximate solution. This is faster but converts some sNaNs to
 // infinity and doesn't round correctly. Handle with care.
-static half approx_float_to_half(float fl)
+static magmaHalf approx_float_to_half(float fl)
 {
     FP32 f32infty = { 255 << 23 };
     FP32 f16max = { (127 + 16) << 23 };
@@ -113,17 +120,17 @@ static half approx_float_to_half(float fl)
 
     o.u = f.u >> 13; // Take the mantissa bits
     o.u |= sign >> 16;
-    half tmp;
-    memcpy(&tmp, &o, sizeof(half));
+    magmaHalf tmp;
+    memcpy(&tmp, &o, sizeof(magmaHalf));
     //return *((half*)&o);
     return tmp;
 }
 
 // from half->float code - just for verification.
-static float half_to_float(half hf)
+static float half_to_float(magmaHalf hf)
 {
     FP16 h;
-    memcpy(&h, &hf, sizeof(half));
+    memcpy(&h, &hf, sizeof(magmaHalf));
 
     static const FP32 magic = { 113 << 23 };
     static const uint shifted_exp = 0x7c00 << 13; // exponent mask after shift
@@ -299,7 +306,8 @@ int main( int argc, char** argv)
             /* =====================================================================
                Performs operation using GPU
                =================================================================== */
-            #ifdef HAVE_CUBLAS
+            #if defined(HAVE_CUBLAS)
+                /* TODO: add support for HIP platform */
                 magma_flush_cache( opts.cache );
                 dev_time = magma_sync_wtime( opts.queue );
 
@@ -322,7 +330,7 @@ int main( int argc, char** argv)
             /* =====================================================================
                Check the result
                =================================================================== */
-            #ifdef HAVE_CUBLAS
+            #if defined(HAVE_CUBLAS) || defined(HAVE_HIP)
             if ( opts.lapack || opts.check ) {
                 /* =====================================================================
                    Performs operation using CPU BLAS

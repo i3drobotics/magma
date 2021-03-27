@@ -1,16 +1,16 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
        @author Raffaele Solca
        @author Stan Tomov
        @author Azzam Haidar
        @author Mark Gates
 
-       @generated from src/dsygvd.cpp, normal d -> s, Thu Oct  8 23:05:29 2020
+       @generated from src/dsygvd.cpp, normal d -> s, Sat Mar 27 20:30:59 2021
 
 */
 #include "magma_internal.h"

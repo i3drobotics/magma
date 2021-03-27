@@ -1,19 +1,19 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
        @author Hartwig Anzt
 
-       @generated from sparse/blas/zparilu.cpp, normal z -> c, Thu Oct  8 23:05:48 2020
+       @generated from sparse/blas/zparilu.cpp, normal z -> c, Sat Mar 27 20:32:31 2021
 */
 #include "magmasparse_internal.h"
 
 #define PRECISION_c
 
-#if CUDA_VERSION >= 11000
+#if CUDA_VERSION >= 11000 || defined(HAVE_HIP)
 #define cusparseCreateSolveAnalysisInfo(info) cusparseCreateCsrsm2Info(info)
 #else
 #define cusparseCreateSolveAnalysisInfo(info)                                                   \
@@ -34,6 +34,22 @@
            magma_malloc(&buf, bufsize);                                                         \
         cusparseCcsrsv2_analysis(handle, trans, m, nnz, descr, val, row, col, linfo,            \
                                  CUSPARSE_SOLVE_POLICY_USE_LEVEL, buf);                         \
+        if (bufsize > 0)                                                                        \
+           magma_free(buf);                                                                     \
+    }
+#elif defined(HAVE_HIP)
+#define cusparseCcsrsv_analysis(handle, trans, m, nnz, descr, val, row, col, info)              \
+    {                                                                                           \
+        csrsv2Info_t linfo = 0;                                                                 \
+        int bufsize;                                                                            \
+        void *buf;                                                                              \
+        hipsparseCreateCsrsv2Info(&linfo);                                                       \
+        hipsparseCcsrsv2_bufferSize(handle, trans, m, nnz, descr, (hipFloatComplex*)val, row, col,                 \
+                                   linfo, &bufsize);                                            \
+        if (bufsize > 0)                                                                        \
+           magma_malloc(&buf, bufsize);                                                         \
+        hipsparseCcsrsv2_analysis(handle, trans, m, nnz, descr, (hipFloatComplex*)val, row, col, linfo,            \
+                                 HIPSPARSE_SOLVE_POLICY_USE_LEVEL, buf);                         \
         if (bufsize > 0)                                                                        \
            magma_free(buf);                                                                     \
     }

@@ -1,13 +1,13 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
        @author Azzam Haidar
 
-       @generated from src/core_zhbtype3cb.cpp, normal z -> d, Thu Oct  8 23:05:29 2020
+       @generated from src/core_zhbtype3cb.cpp, normal z -> d, Sat Mar 27 20:30:59 2021
 
 */
 #include "magma_internal.h"

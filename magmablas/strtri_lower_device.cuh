@@ -1,11 +1,11 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
-       @generated from magmablas/ztrtri_lower_device.cuh, normal z -> s, Thu Oct  8 23:05:56 2020
+       @generated from magmablas/ztrtri_lower_device.cuh, normal z -> s, Sat Mar 27 20:33:21 2021
 
        @author Peng Du
        @author Tingxing Dong
@@ -17,6 +17,9 @@
 */
 
 #include "magma_internal.h"
+
+// define 0 for large initializations
+#define Z0 MAGMA_S_ZERO
 
 /*
     This inverts the diagonal IB by IB inner blocks of A,
@@ -175,8 +178,8 @@ triple_sgemm16_part1_lower_device(
 
         // compute NT x 16 block of C
         // each thread computes one 1x16 row, C(id,0:15)
-        float rC[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-        float rA[4]  = {0, 0, 0, 0};
+        float rC[16] = {Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0};
+        float rA[4]  = {Z0, Z0, Z0, Z0};
 
         do {
             // TODO this won't coalesce, will it? unless NX=32 (or maybe 16 with floats, or 8 with float-real)
@@ -291,8 +294,8 @@ triple_sgemm16_part2_lower_device(
 
         // compute NT x 16 block of C
         // each thread computes one 1x16 row, C(id,0:15)
-        float rC[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-        float rA[4]  = {0, 0, 0, 0};
+        float rC[16] = {Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0};
+        float rA[4]  = {Z0, Z0, Z0, Z0};
 
         do {
             // load 16 x 16 block of B using NX x 4 threads
@@ -394,8 +397,8 @@ triple_sgemm32_part1_lower_device(
 
         // compute NT x 16 block of C
         // each thread computes one 1x16 row, C(id,0:15)
-        float rC[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-        float rA[4]  = {0, 0, 0, 0};
+        float rC[16] = {Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0};
+        float rA[4]  = {Z0, Z0, Z0, Z0};
         
         do {
             // load 16 x 16 block of B using NX x 4 threads
@@ -498,8 +501,8 @@ triple_sgemm32_part2_lower_device(
 
         // compute NT x 16 block of C
         // each thread computes one 1x16 row, C(id,0:15)
-        float rC[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-        float rA[4]  = {0, 0, 0, 0};
+        float rC[16] = {Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0};
+        float rA[4]  = {Z0, Z0, Z0, Z0};
 
         do {
             // load 16 x 16 block of B using NX x 4 threads
@@ -601,8 +604,8 @@ triple_sgemm64_part1_lower_device(
 
         // compute NT x 16 block of C
         // each thread computes one 1x16 row, C(id,0:15)
-        float rC[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-        float rA[4]  = {0, 0, 0, 0};
+        float rC[16] = {Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0};
+        float rA[4]  = {Z0, Z0, Z0, Z0};
 
         do {
             // load 16 x 16 block of B using NX x 4 threads
@@ -705,8 +708,8 @@ triple_sgemm64_part2_lower_device(
 
         // compute NT x 16 block of C
         // each thread computes one 1x16 row, C(id,0:15)
-        float rC[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-        float rA[4]  = {0, 0, 0, 0};
+        float rC[16] = {Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0};
+        float rA[4]  = {Z0, Z0, Z0, Z0};
 
         do {
             // load 16 x 16 block of B using NX x 4 threads
@@ -817,8 +820,8 @@ triple_sgemm_above64_part1_lower_device(
 
         // compute NT x 16 block of C
         // each thread computes one 1x16 row, C(id,0:15)
-        float rC[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-        float rA[4]  = {0, 0, 0, 0};
+        float rC[16] = {Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0};
+        float rA[4]  = {Z0, Z0, Z0, Z0};
 
         do {
             // load 16 x 16 block of B using NX x 4 threads
@@ -921,8 +924,8 @@ triple_sgemm_above64_part2_lower_device(
 
         // compute NT x 16 block of C
         // each thread computes one 1x16 row, C(id,0:15)
-        float rC[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-        float rA[4]  = {0, 0, 0, 0};
+        float rC[16] = {Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0};
+        float rA[4]  = {Z0, Z0, Z0, Z0};
 
         do {
             // load 16 x 16 block of B using NX x 4 threads

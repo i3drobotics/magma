@@ -1,9 +1,9 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
        @author Azzam Haidar
        @author Stan Tomov
@@ -11,7 +11,6 @@
        @precisions normal z -> s d c
 
 */
-#include <cuda_runtime.h>
 
 #include "magma_internal.h"
 #include "trace.h"
@@ -237,8 +236,8 @@ magma_zhetrd_he2hb(
     memset( hT, 0, nb*nb*sizeof(magmaDoubleComplex));
 
     magma_event_t Pupdate_event;
-    cudaEventCreateWithFlags(&Pupdate_event,cudaEventDisableTiming);
-    //magma_event_create(&Pupdate_event);
+    //cudaEventCreateWithFlags(&Pupdate_event,cudaEventDisableTiming);
+    magma_event_create_untimed(&Pupdate_event);
 
 
     if (upper) {

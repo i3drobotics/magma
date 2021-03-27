@@ -1,14 +1,14 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
        @author Tingxing Dong
        @author Azzam Haidar
 
-       @generated from magmablas/ztrsv_template_device.cuh, normal z -> d, Thu Oct  8 23:05:56 2020
+       @generated from magmablas/ztrsv_template_device.cuh, normal z -> d, Sat Mar 27 20:33:22 2021
 */
 
 
@@ -23,7 +23,6 @@
 
 #define A(i, j)  (A + (i) + (j)*lda)   // A(i, j) means at i row, j column
 
-extern __shared__ double shared_data[];
 
 
 /******************************************************************************/
@@ -156,6 +155,8 @@ dtrsv_notrans_device(
     double *b, int incb,
     double *x)
 {
+    extern __shared__ double shared_data[];
+    
     int tx = threadIdx.x;
     int col = n;
     double *sx = (double*)shared_data;
@@ -224,6 +225,8 @@ dtrsv_trans_device(
     double *b, int incb,
     double *x)
 {
+    extern __shared__ double shared_data[];
+    
     int tx = threadIdx.x;
     int col = n;
     double *sx = (double*)shared_data;

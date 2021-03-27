@@ -1,12 +1,12 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
        @author Mark Gates
-       @generated from magmablas/zlanhe.cu, normal z -> s, Thu Oct  8 23:05:34 2020
+       @generated from magmablas/zlanhe.cu, normal z -> s, Sat Mar 27 20:31:21 2021
 
 */
 #include "magma_internal.h"
@@ -34,7 +34,7 @@ slansy_inf_kernel_lower(
     float * __restrict__ dwork,
     int n_full_block, int n_mod_bs )
 {
-#if (defined(PRECISION_s) || defined(PRECISION_d) || defined(PRECISION_c) || __CUDA_ARCH__ >= 200)
+#if (defined(PRECISION_s) || defined(PRECISION_d) || defined(PRECISION_c) || __CUDA_ARCH__ >= 200) || defined(HAVE_HIP)
     int tx = threadIdx.x;
     int ty = threadIdx.y;
     
@@ -229,7 +229,7 @@ slansy_inf_kernel_lower(
             dwork[ind] = res;
         }
     }
-#endif /* (PRECISION_s || PRECISION_d || PRECISION_c || __CUDA_ARCH__ >= 200) */
+#endif /* (PRECISION_s || PRECISION_d || PRECISION_c || __CUDA_ARCH__ >= 200 || defined(HAVE_HIP)) */
 }
 
 
@@ -250,7 +250,7 @@ slansy_inf_kernel_upper(
     float * __restrict__ dwork,
     int n_full_block, int n_mod_bs )
 {
-#if (defined(PRECISION_s) || defined(PRECISION_d) || defined(PRECISION_c) || __CUDA_ARCH__ >= 200)
+#if (defined(PRECISION_s) || defined(PRECISION_d) || defined(PRECISION_c) || __CUDA_ARCH__ >= 200) || defined(HAVE_HIP)
     int tx = threadIdx.x;
     int ty = threadIdx.y;
     
@@ -447,7 +447,7 @@ slansy_inf_kernel_upper(
             dwork[ind] = res;
         }
     }
-#endif /* (PRECISION_s || PRECISION_d || PRECISION_c || __CUDA_ARCH__ >= 200) */
+#endif /* (PRECISION_s || PRECISION_d || PRECISION_c || __CUDA_ARCH__ >= 200 || defined(HAVE_HIP)) */
 }
 
 

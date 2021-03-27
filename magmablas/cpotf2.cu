@@ -1,11 +1,11 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
        
-       @generated from magmablas/zpotf2.cu, normal z -> c, Thu Oct  8 23:05:35 2020
+       @generated from magmablas/zpotf2.cu, normal z -> c, Sat Mar 27 20:31:34 2021
 */
 #include "magma_internal.h"
 
@@ -160,12 +160,14 @@ magma_cpotf2_gpu(
 #define cdotc_bs  512
 #define clacgv_bs 512
 
-// dynamically allocated shared memory, set to size number of threads when the kernel is launched.
-// See CUDA Guide B.2.3
-extern __shared__ float shared_data[];
 
 __global__ void kernel_cdotc(int n, magmaFloatComplex *x, int incx, int threadSize)
 {
+
+    // dynamically allocated shared memory, set to size number of threads when the kernel is launched.
+    // See CUDA Guide B.2.3
+    extern __shared__ float shared_data[];
+
     int tx = threadIdx.x;
 
     float *sdata = shared_data;

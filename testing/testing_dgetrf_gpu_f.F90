@@ -1,11 +1,11 @@
 !!
-!!   -- MAGMA (version 2.5.4)
+!!   -- MAGMA (version 2.0)
 !!      Univ. of Tennessee, Knoxville
 !!      Univ. of California, Berkeley
 !!      Univ. of Colorado, Denver
-!!      @date October 2020
+!!      @date
 !!
-!!  @generated from testing/testing_zgetrf_gpu_f.F90, normal z -> d, Thu Oct  8 23:05:46 2020
+!!  @generated from testing/testing_zgetrf_gpu_f.F90, normal z -> d, Sat Mar 27 20:32:22 2021
 !!
 program testing_dgetrf_gpu_f
     use magma

@@ -1,11 +1,11 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
-       @generated from testing/testing_zgemv.cpp, normal z -> c, Thu Oct  8 23:05:39 2020
+       @generated from testing/testing_zgemv.cpp, normal z -> c, Sat Mar 27 20:31:47 2021
 */
 // includes, system
 #include <stdlib.h>
@@ -66,7 +66,7 @@ int main(int argc, char **argv)
     float tol = 3*eps;
 
     printf("%% trans = %s\n", lapack_trans_const(opts.transA) );
-    #ifdef HAVE_CUBLAS
+    #if defined(HAVE_CUBLAS) || defined(HAVE_HIP)
         printf("%%   M     N   MAGMA Gflop/s (ms)  %s Gflop/s (ms)   CPU Gflop/s (ms)  MAGMA error  %s error\n",
                 g_platform_str, g_platform_str );
     #else
@@ -135,7 +135,7 @@ int main(int argc, char **argv)
             /* =====================================================================
                Performs operation using MAGMABLAS (currently only with CUDA)
                =================================================================== */
-            #ifdef HAVE_CUBLAS
+            #if defined(HAVE_CUBLAS) || defined(HAVE_HIP)
                 magma_csetvector( Ym, Y, incy, dY(0), incy, opts.queue );
                 
                 magma_flush_cache( opts.cache );
@@ -174,7 +174,7 @@ int main(int argc, char **argv)
             // TODO: investigate why.
             tol = (M < 20000 && N < 20000 ? 3*eps : opts.tolerance*eps);
             
-            #ifdef HAVE_CUBLAS
+            #if defined(HAVE_CUBLAS) || defined(HAVE_HIP)
                 blasf77_caxpy( &Ym, &c_neg_one, Y, &incy, Ymagma, &incy );
                 magma_error = lapackf77_clange( "F", &Ym, &ione, Ymagma, &Ym, work )
                             / (sqrt(float(N+2))*fabs(alpha)*Anorm*Xnorm + 2*fabs(beta)*Ynorm);

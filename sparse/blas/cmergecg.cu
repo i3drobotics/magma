@@ -1,19 +1,30 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
-       @generated from sparse/blas/zmergecg.cu, normal z -> c, Thu Oct  8 23:05:50 2020
+       @generated from sparse/blas/zmergecg.cu, normal z -> c, Sat Mar 27 20:32:28 2021
        @author Hartwig Anzt
 
 */
 #include "magmasparse_internal.h"
 
+#define PRECISION_c
+
+/* For hipSPARSE, they use a separate complex type than for hipBLAS */
+#if defined(HAVE_HIP)
+  #ifdef PRECISION_z
+    #define hipblasComplex hipFloatComplex
+  #elif defined(PRECISION_c)
+    #define hipblasComplex hipComplex
+  #endif
+#endif
+
+
 #define BLOCK_SIZE 512
 
-#define PRECISION_c
 
 #if CUDA_VERSION >= 11000
 // todo: destroy descriptor and see if the original code descriptors have to be changed
@@ -1096,8 +1107,8 @@ magma_ccgmerge_spmv1(
         cusparseSetMatType( descr, CUSPARSE_MATRIX_TYPE_GENERAL );
         cusparseSetMatIndexBase( descr, CUSPARSE_INDEX_BASE_ZERO );
         cusparseCcsrmv( cusparseHandle,CUSPARSE_OPERATION_NON_TRANSPOSE,
-                        A.num_rows, A.num_cols, A.nnz, &c_one, descr,
-                        A.dval, A.drow, A.dcol, dd, &c_zero, dz );
+                        A.num_rows, A.num_cols, A.nnz, (cuFloatComplex*)&c_one, descr,
+                        (cuFloatComplex*)A.dval, A.drow, A.dcol, (cuFloatComplex*)dd, (cuFloatComplex*)&c_zero, (cuFloatComplex*)dz );
         cusparseDestroyMatDescr( descr );
         cusparseDestroy( cusparseHandle );
         cusparseHandle = 0;

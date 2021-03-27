@@ -1,11 +1,11 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
-       @generated from magmablas/zcaxpycp.cu, mixed zc -> ds, Thu Oct  8 23:05:30 2020
+       @generated from magmablas/zcaxpycp.cu, mixed zc -> ds, Sat Mar 27 20:31:15 2021
 
 */
 #include "magma_internal.h"
@@ -27,8 +27,8 @@ dsaxpycp_kernel(
 {
     const int i = threadIdx.x + blockIdx.x*NB;
     if ( i < m ) {
-        x[i] = MAGMA_D_ADD( x[i], MAGMA_D_MAKE( MAGMA_D_REAL( r[i] ),
-                                                MAGMA_D_IMAG( r[i] ) ) );
+        x[i] = MAGMA_D_ADD( x[i], MAGMA_D_MAKE( MAGMA_S_REAL( r[i] ),
+                                                MAGMA_S_IMAG( r[i] ) ) );
         w[i] = b[i];
     }
 }

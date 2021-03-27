@@ -1,9 +1,9 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
        @precisions normal z -> s d c
        @author Hartwig Anzt
@@ -12,7 +12,7 @@
 
 // todo: see how to destroy info
 // there are different, e.g., cusparseDestroyCsrsv2Info(info), etc.
-#if CUDA_VERSION >= 11000
+#if CUDA_VERSION >= 11000 || defined(HAVE_HIP)
 #define cusparseDestroySolveAnalysisInfo(info) {;}
 #endif
 

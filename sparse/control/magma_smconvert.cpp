@@ -1,16 +1,23 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
-       @generated from sparse/control/magma_zmconvert.cpp, normal z -> s, Thu Oct  8 23:05:54 2020
+       @generated from sparse/control/magma_zmconvert.cpp, normal z -> s, Sat Mar 27 20:32:39 2021
        @author Hartwig Anzt
 */
 #include "magmasparse_internal.h"
 
 #include <cuda.h>  // for CUDA_VERSION
+
+
+/* For hipSPARSE, they use a separate real type than for hipBLAS */
+#ifdef HAVE_HIP
+  #define float float
+#endif
+
 
 // todo: check if we need buf later
 #if CUDA_VERSION >= 11000
@@ -1750,9 +1757,9 @@ magma_smconvert(
             // conversion using CUSPARSE
             cusparseScsr2bsr( cusparseHandle, CUSPARSE_DIRECTION_ROW,
                               A.num_rows, A.num_cols, descr,
-                              A.dval, A.drow, A.dcol,
+                              (float*)A.dval, A.drow, A.dcol,
                               size_b, descr,
-                              B->dval, B->drow, B->dcol);
+                              (float*)B->dval, B->drow, B->dcol);
         }
         // BCSR to CSR
         else if ( old_format == Magma_BCSR && new_format == Magma_CSR ) {
@@ -1784,9 +1791,9 @@ magma_smconvert(
 
             // conversion using CUSPARSE
             cusparseSbsr2csr( cusparseHandle, CUSPARSE_DIRECTION_ROW,
-                              mb, nb, descr, A.dval, A.drow, A.dcol,
+                              mb, nb, descr, (float*)A.dval, A.drow, A.dcol,
                               size_b, descr,
-                              B->dval, B->drow, B->dcol );
+                              (float*)B->dval, B->drow, B->dcol );
         }
         // CSR to CSC
         else if ( old_format == Magma_CSR && new_format == Magma_CSC ) {
@@ -1812,8 +1819,8 @@ magma_smconvert(
 
             // conversion using CUSPARSE
             cusparseScsr2csc(cusparseHandle, A.num_rows, A.num_cols, A.nnz,
-                             A.dval, A.drow, A.dcol,
-                             B->dval, B->drow, B->dcol,
+                             (float*)A.dval, A.drow, A.dcol,
+                             (float*)B->dval, B->drow, B->dcol,
                              CUSPARSE_ACTION_NUMERIC,
                              CUSPARSE_INDEX_BASE_ZERO);
         }
@@ -1841,8 +1848,8 @@ magma_smconvert(
 
             // conversion using CUSPARSE
             cusparseScsr2csc(cusparseHandle, A.num_cols, A.num_rows, A.nnz,
-                             A.dval, A.dcol, A.drow,
-                             B->dval, B->dcol, B->drow,
+                             (float*)A.dval, A.dcol, A.drow,
+                             (float*)B->dval, B->dcol, B->drow,
                              CUSPARSE_ACTION_NUMERIC,
                              CUSPARSE_INDEX_BASE_ZERO);
         }

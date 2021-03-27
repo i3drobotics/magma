@@ -1,11 +1,11 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
-       @generated from testing/testing_ztrsm_batched.cpp, normal z -> s, Thu Oct  8 23:05:46 2020
+       @generated from testing/testing_ztrsm_batched.cpp, normal z -> s, Sat Mar 27 20:32:17 2021
        @author Chongxiao Cao
        @author Tingxing Dong
        @author Azzam Haidar
@@ -207,12 +207,22 @@ int main( int argc, char** argv)
             magma_sset_pointer( d_B_array, d_B, lddb, 0, 0, lddb*N, batchCount, opts.queue );
 
             cublas_time = magma_sync_wtime( opts.queue );
+            #ifdef HAVE_CUBLAS
             cublasStrsmBatched(
                 opts.handle, cublas_side_const(opts.side), cublas_uplo_const(opts.uplo),
                 cublas_trans_const(opts.transA), cublas_diag_const(opts.diag),
                 int(M), int(N), (const float*)&alpha,
                 (float* const*) d_A_array, int(ldda),
                 (      float**) d_B_array, int(lddb), int(batchCount) );
+            #else
+            hipblasStrsmBatched(
+                opts.handle, cublas_side_const(opts.side), cublas_uplo_const(opts.uplo),
+                cublas_trans_const(opts.transA), cublas_diag_const(opts.diag),
+                int(M), int(N), (const float*)&alpha,
+                (float* const*) d_A_array, int(ldda),
+                (      float**) d_B_array, int(lddb), int(batchCount) );
+            #endif 
+
             cublas_time = magma_sync_wtime( opts.queue ) - cublas_time;
             cublas_perf = gflops / cublas_time;
 

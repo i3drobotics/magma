@@ -1,11 +1,11 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
-       @generated from sparse/blas/magma_zcuspmm.cpp, normal z -> d, Thu Oct  8 23:05:48 2020
+       @generated from sparse/blas/magma_zcuspmm.cpp, normal z -> d, Sat Mar 27 20:32:31 2021
        @author Hartwig Anzt
 
 */
@@ -175,6 +175,18 @@ magma_dcuspmm(
         }
         CHECK( magma_index_malloc( &C.dcol, C.nnz ));
         CHECK( magma_dmalloc( &C.dval, C.nnz ));
+        #ifdef HAVE_HIP
+        hipsparseDcsrgemm( handle, HIPSPARSE_OPERATION_NON_TRANSPOSE,
+                          HIPSPARSE_OPERATION_NON_TRANSPOSE,
+                          A.num_rows, B.num_cols, A.num_cols,
+                          descrA, A.nnz,
+                          (const double*)A.dval, A.drow, A.dcol,
+                          descrB, B.nnz,
+                          (const double*)B.dval, B.drow, B.dcol,
+                          descrC,
+                          (double*)C.dval, C.drow, C.dcol );
+
+        #else
         cusparseDcsrgemm( handle, CUSPARSE_OPERATION_NON_TRANSPOSE,
                           CUSPARSE_OPERATION_NON_TRANSPOSE,
                           A.num_rows, B.num_cols, A.num_cols,
@@ -184,6 +196,7 @@ magma_dcuspmm(
                           B.dval, B.drow, B.dcol,
                           descrC,
                           C.dval, C.drow, C.dcol );
+        #endif
         // end CUSPARSE context //
         magma_queue_sync( queue );
         CHECK( magma_dmtransfer( C, AB, Magma_DEV, Magma_DEV, queue ));

@@ -1,17 +1,16 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
        @author Azzam Haidar
        @author Stan Tomov
        @author Raffaele Solca
   
-       @generated from src/zbulge_applyQ_v2_m.cpp, normal z -> d, Thu Oct  8 23:05:29 2020
+       @generated from src/zbulge_applyQ_v2_m.cpp, normal z -> d, Sat Mar 27 20:30:56 2021
 */
-#include <cuda_runtime.h>
 
 #include "magma_internal.h"
 #include "magma_bulge.h"
@@ -131,7 +130,7 @@ magma_dbulge_applyQ_v2_m(
         }
         for( magma_int_t i = 0; i < nevents; ++i ) {
             //cudaEventCreateWithFlags(&myevent[dev][i],cudaEventDisableTiming);
-            magma_event_create(&myevent[dev][i]);
+            magma_event_create_untimed(&myevent[dev][i]);
         }
     }
 

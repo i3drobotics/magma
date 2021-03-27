@@ -1,9 +1,9 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
        @author Tobias Ribizel
 */
@@ -66,6 +66,13 @@ __global__ void collect_bucket_indirect(const double*,const uint32_t*,const int3
 
 __global__ void sampleselect_tailcall(float*,float*,float*,int32_t*,float*);
 __global__ void sampleselect_tailcall(double*,double*,double*,int32_t*,double*);
+
+
+/* No-DP versions */
+void sampleselect_nodp(cudaStream_t stream, float*,float*,float*,int32_t*,int32_t,int32_t,float*);
+void sampleselect_nodp(cudaStream_t stream, double*,double*,double*,int32_t*,int32_t,int32_t,double*);
+void sampleselect_tailcall_nodp(cudaStream_t stream, float*,float*,float*,int32_t*,float*);
+void sampleselect_tailcall_nodp(cudaStream_t stream, double*,double*,double*,int32_t*,double*);
 
 /*
  * Type-independent helpers

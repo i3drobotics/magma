@@ -1,11 +1,11 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
-       @generated from magmablas/zlarft_kernels.cu, normal z -> c, Thu Oct  8 23:05:35 2020
+       @generated from magmablas/zlarft_kernels.cu, normal z -> c, Sat Mar 27 20:31:23 2021
        @author Azzam Haidar
 */
 
@@ -16,7 +16,7 @@
 
 #define use_gemm_larft
 
-extern __shared__ magmaFloatComplex shared_data[];
+//extern __shared__ magmaFloatComplex shared_data[];
 
 /******************************************************************************/
 static __device__
@@ -24,6 +24,8 @@ void clarft_gemvcolwise_device(
     int m, magmaFloatComplex *v, magmaFloatComplex *tau,
     magmaFloatComplex *c, int ldc, magmaFloatComplex *T, int ldt, int step )
 {
+    extern __shared__ magmaFloatComplex shared_data[];
+
     const int thblk =  blockIdx.x;
     if (thblk > step)
         return;
@@ -192,6 +194,8 @@ clarft_gemvrowwise_kernel(
     magmaFloatComplex *v, int ldv,
     magmaFloatComplex *T, int ldt)
 {
+    extern __shared__ magmaFloatComplex shared_data[];
+
     magmaFloatComplex *W =  T +i*ldt;
 
     magmaFloatComplex *sdata = (magmaFloatComplex*)shared_data;
@@ -209,6 +213,8 @@ clarft_gemvrowwise_kernel_batched(
     magmaFloatComplex **v_array, int ldv,
     magmaFloatComplex **T_array, int ldt)
 {
+    extern __shared__ magmaFloatComplex shared_data[];
+    
     int batchid = blockIdx.z;
 
     magmaFloatComplex *W =  T_array[batchid] +i*ldt;
@@ -275,9 +281,11 @@ clarft_gemv_loop_inside_device(
     magmaFloatComplex *v, int ldv,
     magmaFloatComplex *T, int ldt)
 {
-    int tx = threadIdx.x;
-    int ty = threadIdx.y;
-
+    extern __shared__ magmaFloatComplex shared_data[];
+    
+    int tx = threadIdx.x; 
+    int ty = threadIdx.y; 
+    
     int incx = 1;
     magmaFloatComplex *sdata = (magmaFloatComplex*)shared_data;
 
@@ -419,7 +427,9 @@ clarft_ctrmv_sm32x32_device(
     int n, int k, magmaFloatComplex *tau,
     magmaFloatComplex *Tin, int ldtin,  magmaFloatComplex *Tout, int ldtout )
 {
-    int tx = threadIdx.x;
+    extern __shared__ magmaFloatComplex shared_data[];
+    
+    int tx = threadIdx.x; 
     magmaFloatComplex *sdata = (magmaFloatComplex*)shared_data;
     magmaFloatComplex res;
 
@@ -551,7 +561,9 @@ clarft_recctrmv_sm32x32_device(
     int m, int n, magmaFloatComplex *tau,
     magmaFloatComplex *Trec, int ldtrec, magmaFloatComplex *Ttri, int ldttri)
 {
-    int tx = threadIdx.x;
+    extern __shared__ magmaFloatComplex shared_data[];
+    
+    int tx = threadIdx.x; 
     magmaFloatComplex *sdata = (magmaFloatComplex*)shared_data;
     magmaFloatComplex res;
 

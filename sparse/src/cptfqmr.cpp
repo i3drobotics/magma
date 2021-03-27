@@ -1,13 +1,13 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
        @author Hartwig Anzt
 
-       @generated from sparse/src/zptfqmr.cpp, normal z -> c, Thu Oct  8 23:05:52 2020
+       @generated from sparse/src/zptfqmr.cpp, normal z -> c, Sat Mar 27 20:32:54 2021
 */
 
 #include "magmasparse_internal.h"
@@ -144,7 +144,7 @@ magma_cptfqmr(
     {
         solver_par->numiter++;
         if( solver_par->numiter%2 == 1 ){
-            alpha = rho / magma_cdotc( dofs, v.dval, 1, r_tld.dval, 1, queue );
+            alpha = rho / magma_cdotc( dofs, r_tld.dval, 1, v.dval, 1, queue );
             magma_ccopy( dofs, u_m.dval, 1, u_mp1.dval, 1, queue );   
             magma_caxpy( dofs,  -alpha, v.dval, 1, u_mp1.dval, 1, queue );     // u_mp1 = u_m - alpha*v;
         }

@@ -1,11 +1,11 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
-       @generated from magmablas/zlarft_kernels.cu, normal z -> s, Thu Oct  8 23:05:34 2020
+       @generated from magmablas/zlarft_kernels.cu, normal z -> s, Sat Mar 27 20:31:22 2021
        @author Azzam Haidar
 */
 
@@ -16,7 +16,7 @@
 
 #define use_gemm_larft
 
-extern __shared__ float shared_data[];
+//extern __shared__ float shared_data[];
 
 /******************************************************************************/
 static __device__
@@ -24,6 +24,8 @@ void slarft_gemvcolwise_device(
     int m, float *v, float *tau,
     float *c, int ldc, float *T, int ldt, int step )
 {
+    extern __shared__ float shared_data[];
+
     const int thblk =  blockIdx.x;
     if (thblk > step)
         return;
@@ -192,6 +194,8 @@ slarft_gemvrowwise_kernel(
     float *v, int ldv,
     float *T, int ldt)
 {
+    extern __shared__ float shared_data[];
+
     float *W =  T +i*ldt;
 
     float *sdata = (float*)shared_data;
@@ -209,6 +213,8 @@ slarft_gemvrowwise_kernel_batched(
     float **v_array, int ldv,
     float **T_array, int ldt)
 {
+    extern __shared__ float shared_data[];
+    
     int batchid = blockIdx.z;
 
     float *W =  T_array[batchid] +i*ldt;
@@ -275,9 +281,11 @@ slarft_gemv_loop_inside_device(
     float *v, int ldv,
     float *T, int ldt)
 {
-    int tx = threadIdx.x;
-    int ty = threadIdx.y;
-
+    extern __shared__ float shared_data[];
+    
+    int tx = threadIdx.x; 
+    int ty = threadIdx.y; 
+    
     int incx = 1;
     float *sdata = (float*)shared_data;
 
@@ -419,7 +427,9 @@ slarft_strmv_sm32x32_device(
     int n, int k, float *tau,
     float *Tin, int ldtin,  float *Tout, int ldtout )
 {
-    int tx = threadIdx.x;
+    extern __shared__ float shared_data[];
+    
+    int tx = threadIdx.x; 
     float *sdata = (float*)shared_data;
     float res;
 
@@ -551,7 +561,9 @@ slarft_recstrmv_sm32x32_device(
     int m, int n, float *tau,
     float *Trec, int ldtrec, float *Ttri, int ldttri)
 {
-    int tx = threadIdx.x;
+    extern __shared__ float shared_data[];
+    
+    int tx = threadIdx.x; 
     float *sdata = (float*)shared_data;
     float res;
 

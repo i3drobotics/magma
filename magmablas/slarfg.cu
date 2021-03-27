@@ -1,11 +1,11 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
-       @generated from magmablas/zlarfg.cu, normal z -> s, Thu Oct  8 23:05:33 2020
+       @generated from magmablas/zlarfg.cu, normal z -> s, Sat Mar 27 20:31:22 2021
        
        @author Mark Gates
 */
@@ -118,7 +118,7 @@ slarfg_kernel(
          H * ( alpha ) = ( beta ),   H**H * H = I.
              (   x   )   (   0  )
 
-    where alpha and beta are scalars, with beta real and beta = ±norm([alpha, x]),
+    where alpha and beta are scalars, with beta real and |beta| = norm([alpha, x]),
     and x is an (n-1)-element real vector. H is represented in the form
 
          H = I - tau * ( 1 ) * ( 1 v**H ),

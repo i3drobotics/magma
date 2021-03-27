@@ -1,9 +1,9 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
        @precisions normal z -> c d s
 
@@ -13,6 +13,12 @@
 #define PRECISION_z
 
 #define SWAP(a, b)  { tmp = a; a = b; b = tmp; }
+
+/* For hipSPARSE, they use a separate complex type than for hipBLAS */
+#ifdef HAVE_HIP
+  #define hipblasDoubleComplex hipDoubleComplex
+#endif
+
 
 
 __global__ void 
@@ -325,6 +331,7 @@ magma_zmatrix_cup_gpu(
     U->storage_type = Magma_CSR;
     U->memory_location = Magma_DEV;
    
+
     int blocksize1 = 128;
     int blocksize2 = 1;
 
@@ -343,7 +350,8 @@ magma_zmatrix_cup_gpu(
         (num_rows, A.drow, A.dcol, B.drow, B.dcol, inserted);
     
     CHECK(magma_zget_row_ptr(num_rows, &U->nnz, inserted, U->drow, queue));
-        
+    
+
     CHECK(magma_zmalloc(&U->dval, U->nnz));
     CHECK(magma_index_malloc(&U->drowidx, U->nnz));
     CHECK(magma_index_malloc(&U->dcol, U->nnz));
@@ -432,7 +440,7 @@ magma_zcsr_sort_gpu(
         descrA, A->drow, A->dcol, P, pBuffer);
     
     // step 4: gather sorted csrVal
-    cusparseZgthr(handle, A->nnz, A->dval, csrVal_sorted, P, 
+    cusparseZgthr(handle, A->nnz, (cuDoubleComplex*)A->dval, (cuDoubleComplex*)csrVal_sorted, P, 
         CUSPARSE_INDEX_BASE_ZERO);
     
     SWAP(A->dval, csrVal_sorted);

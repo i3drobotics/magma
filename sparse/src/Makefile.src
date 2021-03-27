@@ -1,9 +1,9 @@
 #//////////////////////////////////////////////////////////////////////////////
-#   -- MAGMA (version 2.5.4) --
+#   -- MAGMA (version 2.0) --
 #      Univ. of Tennessee, Knoxville
 #      Univ. of California, Berkeley
 #      Univ. of Colorado, Denver
-#      @date October 2020
+#      @date
 #//////////////////////////////////////////////////////////////////////////////
 
 # push previous directory
@@ -103,6 +103,7 @@ libsparse_src += \
 	$(cdir)/zparilu_cpu.cpp         \
 	$(cdir)/zparic_gpu.cpp          \
         $(cdir)/zparic_cpu.cpp          \
+	$(cdir)/zparilut_gpu_nodp.cpp        \
 	$(cdir)/zparilut_gpu.cpp        \
 	$(cdir)/zparilut_cpu.cpp        \
 	$(cdir)/zparict_cpu.cpp         \

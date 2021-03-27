@@ -1,14 +1,14 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
        @author Azzam Haidar
        @author Tingxing Dong
 
-       @generated from magmablas/zgeqr2_batched.cu, normal z -> s, Thu Oct  8 23:05:36 2020
+       @generated from magmablas/zgeqr2_batched.cu, normal z -> s, Sat Mar 27 20:31:35 2021
 */
 
 #include "magma_internal.h"
@@ -93,7 +93,6 @@ void sgeqr2_device( magma_int_t m, magma_int_t n,
 
 
 /******************************************************************************/
-extern __shared__ float shared_data[];
 
 
 /******************************************************************************/
@@ -101,6 +100,8 @@ __global__
 void sgeqr2_sm_kernel_batched( int m, int n, float** dA_array, magma_int_t lda,
                                float **dtau_array)
 {
+    extern __shared__ float shared_data[];
+    
     float* dA = dA_array[blockIdx.z];
     float* dtau = dtau_array[blockIdx.z];
 
@@ -154,6 +155,8 @@ __global__
 void sgeqr2_column_sm_kernel_batched( int m, int n, float** dA_array, magma_int_t lda,
                                float **dtau_array)
 {
+    extern __shared__ float shared_data[];
+    
     float* dA = dA_array[blockIdx.z];
     float* dtau = dtau_array[blockIdx.z];
 

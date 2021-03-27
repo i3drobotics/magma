@@ -1,9 +1,9 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
        @precisions normal z -> s d c
 */
@@ -224,6 +224,15 @@ magmablas_zhemv_mgpu_sync(
     magma_int_t ngpu,
     magma_int_t nb,
     magma_queue_t queues[] );
+
+magma_int_t
+magma_zhetrs_gpu(
+    magma_uplo_t uplo, magma_int_t n, magma_int_t nrhs,
+    magmaDoubleComplex *dA, magma_int_t ldda,
+    magma_int_t *ipiv,
+    magmaDoubleComplex *dB, magma_int_t lddb,
+    magma_int_t *info,
+    magma_queue_t queue );
 
 // Ichi's version, in src/zhetrd_mgpu.cpp
 void

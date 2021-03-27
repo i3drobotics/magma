@@ -1,12 +1,12 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
        @author Stan Tomov
-       @generated from magmablas/zgeqr2.cpp, normal z -> c, Thu Oct  8 23:05:35 2020
+       @generated from magmablas/zgeqr2.cpp, normal z -> c, Sat Mar 27 20:31:33 2021
 
 */
 #include "magma_internal.h"

@@ -1,11 +1,11 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
-       @generated from testing/testing_zsyr2k_batched.cpp, normal z -> c, Thu Oct  8 23:05:45 2020
+       @generated from testing/testing_zsyr2k_batched.cpp, normal z -> c, Sat Mar 27 20:32:17 2021
        @author Mark Gates
        @author Azzam Haidar
        @author Tingxing Dong

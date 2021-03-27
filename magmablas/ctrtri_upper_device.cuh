@@ -1,11 +1,11 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
-       @generated from magmablas/ztrtri_upper_device.cuh, normal z -> c, Thu Oct  8 23:05:56 2020
+       @generated from magmablas/ztrtri_upper_device.cuh, normal z -> c, Sat Mar 27 20:33:21 2021
 
        @author Peng Du
        @author Tingxing Dong
@@ -19,6 +19,8 @@
 
 #include "magma_internal.h"
 
+// define 0 for large initializations
+#define Z0 MAGMA_C_ZERO
 
 /******************************************************************************/
 /*
@@ -181,8 +183,8 @@ triple_cgemm16_part1_upper_device(
 
         // compute NT x 16 block of C
         // each thread computes one 1x16 row, C(id,0:15)
-        magmaFloatComplex rC[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-        magmaFloatComplex rA[4]  = {0, 0, 0, 0};
+        magmaFloatComplex rC[16] = {Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0};
+        magmaFloatComplex rA[4]  = {Z0, Z0, Z0, Z0};
         
         do {
             // load 16 x 16 block of B using NX x 4 threads
@@ -283,8 +285,8 @@ triple_cgemm16_part2_upper_device(
 
         // compute NT x 16 block of C
         // each thread computes one 1x16 row, C(id,0:15)
-        magmaFloatComplex rC[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-        magmaFloatComplex rA[4]  = {0, 0, 0, 0};
+        magmaFloatComplex rC[16] = {Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0};
+        magmaFloatComplex rA[4]  = {Z0, Z0, Z0, Z0};
 
         do {
             // load 16 x 16 block of B using NX x 4 threads
@@ -385,8 +387,8 @@ triple_cgemm32_part1_upper_device(
 
         // compute NT x 16 block of C
         // each thread computes one 1x16 row, C(id,0:15)
-        magmaFloatComplex rC[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-        magmaFloatComplex rA[4]  = {0, 0, 0, 0};
+        magmaFloatComplex rC[16] = {Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0};
+        magmaFloatComplex rA[4]  = {Z0, Z0, Z0, Z0};
 
         do {
             // load 16 x 16 block of B using NX x 4 threads
@@ -488,8 +490,8 @@ triple_cgemm32_part2_upper_device(
 
         // compute NT x 16 block of C
         // each thread computes one 1x16 row, C(id,0:15)
-        magmaFloatComplex rC[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-        magmaFloatComplex rA[4]  = {0, 0, 0, 0};
+        magmaFloatComplex rC[16] = {Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0};
+        magmaFloatComplex rA[4]  = {Z0, Z0, Z0, Z0};
 
         do {
             // load 16 x 16 block of B using NX x 4 threads
@@ -590,8 +592,8 @@ triple_cgemm64_part1_upper_device(
 
         // compute NT x 16 block of C
         // each thread computes one 1x16 row, C(id,0:15)
-        magmaFloatComplex rC[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-        magmaFloatComplex rA[4]  = {0, 0, 0, 0};
+        magmaFloatComplex rC[16] = {Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0};
+        magmaFloatComplex rA[4]  = {Z0, Z0, Z0, Z0};
 
         do {
             // load 16 x 16 block of B using NX x 4 threads
@@ -693,8 +695,8 @@ triple_cgemm64_part2_upper_device(
 
         // compute NT x 16 block of C
         // each thread computes one 1x16 row, C(id,0:15)
-        magmaFloatComplex rC[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-        magmaFloatComplex rA[4]  = {0, 0, 0, 0};
+        magmaFloatComplex rC[16] = {Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0};
+        magmaFloatComplex rA[4]  = {Z0, Z0, Z0, Z0};
 
         do {
             // load 16 x 16 block of B using NX x 4 threads
@@ -804,8 +806,8 @@ triple_cgemm_above64_part1_upper_device(
 
         // compute NT x 16 block of C
         // each thread computes one 1x16 row, C(id,0:15)
-        magmaFloatComplex rC[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-        magmaFloatComplex rA[4]  = {0, 0, 0, 0};
+        magmaFloatComplex rC[16] = {Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0};
+        magmaFloatComplex rA[4]  = {Z0, Z0, Z0, Z0};
 
         do {
             // load 16 x 16 block of B using NX x 4 threads
@@ -907,8 +909,8 @@ triple_cgemm_above64_part2_upper_device(
 
         // compute NT x 16 block of C
         // each thread computes one 1x16 row, C(id,0:15)
-        magmaFloatComplex rC[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-        magmaFloatComplex rA[4]  = {0, 0, 0, 0};
+        magmaFloatComplex rC[16] = {Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0, Z0};
+        magmaFloatComplex rA[4]  = {Z0, Z0, Z0, Z0};
 
         do {
             // load 16 x 16 block of B using NX x 4 threads

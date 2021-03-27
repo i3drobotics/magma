@@ -1,17 +1,16 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
        @author Stan Tomov
        @author Mark Gates
-       
-       @generated from src/zgetrf_gpu.cpp, normal z -> d, Thu Oct  8 23:05:24 2020
+
+       @generated from src/zgetrf_gpu.cpp, normal z -> d, Sat Mar 27 20:30:33 2021
 
 */
-#include "cuda_runtime.h"    // for cudaMemsetAsync
 #include "magma_internal.h"
 
 /***************************************************************************//**
@@ -27,7 +26,7 @@
     triangular (upper trapezoidal if m < n).
 
     This is the right-looking Level 3 BLAS version of the algorithm.
-    
+
     Arguments
     ---------
     @param[in]
@@ -135,10 +134,11 @@ magma_dgetrf_gpu_expert(
             dipivinfo = diwork;     // dipivinfo size = m
             dipiv = dipivinfo + m;  // dipiv size = minmn
             dinfo = dipiv + minmn;  // dinfo size = 1
-            cudaMemsetAsync( dinfo, 0, sizeof(magma_int_t), queues[0]->cuda_stream() );
+            magma_memset_async(dinfo, 0, sizeof(magma_int_t), queues[0]);
+            //cudaMemsetAsync( dinfo, 0, sizeof(magma_int_t), queues[0]->cuda_stream() );
         }
     }
-    
+
     if (nb <= 1 || nb >= min(m,n) ) {
         if (mode == MagmaHybrid) {
             /* Use CPU code. */
@@ -276,21 +276,21 @@ magma_dgetrf_gpu_expert(
         jb = min( m-j, n-j );
         if ( jb > 0 ) {
             rows = m - j;
-            
+
             magmablas_dtranspose( jb, rows, dAT(j,j), lddat, dAP(0,0), maxm, queues[1] );
             if (mode == MagmaHybrid) {
                 magma_dgetmatrix( rows, jb, dAP(0,0), maxm, work, ldwork, queues[1] );
-            
+
                 // do the cpu part
                 lapackf77_dgetrf( &rows, &jb, work, &ldwork, ipiv+j, &iinfo );
                 if ( *info == 0 && iinfo > 0 )
                     *info = iinfo + j;
-            
+
                 for( i=j; i < j + jb; ++i ) {
                     ipiv[i] += j;
                 }
                 magmablas_dlaswp( n, dAT(0,0), lddat, j + 1, j + jb, ipiv, 1, queues[1] );
-            
+
                 // send j-th panel to device
                 magma_dsetmatrix( rows, jb, work, ldwork, dAP(0,0), maxm, queues[1] );
             }
@@ -306,14 +306,15 @@ magma_dgetrf_gpu_expert(
             }
 
             magmablas_dtranspose( rows, jb, dAP(0,0), maxm, dAT(j,j), lddat, queues[1] );
-            
+
             magma_dtrsm( MagmaRight, MagmaUpper, MagmaNoTrans, MagmaUnit,
                          n-j-jb, jb,
                          c_one, dAT(j,j),    lddat,
                                 dAT(j,j+jb), lddat, queues[1] );
         }
-        
+
         if (mode == MagmaNative) {
+            magma_igetvector( 1, dinfo, 1, info, 1, queues[0] );
             // copy the pivot vector to the CPU
             #ifndef SWP_CHUNK
             magma_igetvector(minmn, dipiv, 1, ipiv, 1, queues[1] );
@@ -328,11 +329,11 @@ magma_dgetrf_gpu_expert(
             magmablas_dtranspose( n, m, dAT(0,0), lddat, dA(0,0), ldda, queues[1] );
         }
     }
-    
+
 cleanup:
     magma_queue_destroy( queues[0] );
     magma_queue_destroy( queues[1] );
-    
+
     magma_free( dAP );
     if (m != n) {
         magma_free( dAT );

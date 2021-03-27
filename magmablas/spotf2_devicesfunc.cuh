@@ -1,15 +1,15 @@
 
 /*
-   -- MAGMA (version 2.5.4) --
+   -- MAGMA (version 2.0) --
    Univ. of Tennessee, Knoxville
    Univ. of California, Berkeley
    Univ. of Colorado, Denver
-   @date October 2020
+   @date
 
    @author Azzam Haidar
    @author Ahmad Ahmad
 
-   @generated from magmablas/zpotf2_devicesfunc.cuh, normal z -> s, Thu Oct  8 23:05:56 2020
+   @generated from magmablas/zpotf2_devicesfunc.cuh, normal z -> s, Sat Mar 27 20:33:21 2021
  */
 
 
@@ -17,7 +17,7 @@
 #define MAGMABLAS_SPOTF2_DEVICES_Z_H
 
 
-extern __shared__ float shared_data[];
+//extern __shared__ float shared_data[];
 
 /******************************************************************************/
 static inline __device__ void spotf2_sminout_anywidth_device(const int m, const int n, float *A, const int lda, int* info)
@@ -369,6 +369,8 @@ static inline __device__ void spotf2_smlpout_fixwidth_device(const int m,
         const int localstep, const int gbstep,
         magma_int_t *info)
 {
+    extern __shared__ float shared_data[];
+
     // checkinfo to avoid computation of the singular matrix
     #ifndef BATCH_DISABLE_CHECKING
     if (*info != 0 ) return;
@@ -429,6 +431,7 @@ static inline __device__ void spotf2_smlpout_anywidth_device(const int m, const 
         const int localstep, const int gbstep,
         magma_int_t *info)
 {
+    extern __shared__ float shared_data[];
     // checkinfo to avoid computation of the singular matrix
     #ifndef BATCH_DISABLE_CHECKING
     if (*info != 0 ) return;

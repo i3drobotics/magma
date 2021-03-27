@@ -1,12 +1,12 @@
 /*
-    -- MAGMA (version 2.5.4) --
+    -- MAGMA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
-       @date October 2020
+       @date
 
        @author Mark Gates
-       @generated from src/zlatrsd.cpp, normal z -> c, Thu Oct  8 23:05:31 2020
+       @generated from src/zlatrsd.cpp, normal z -> c, Sat Mar 27 20:31:03 2021
        Making s,d precisions requires fixing dot call.
 */
 #include "magma_internal.h"
@@ -585,12 +585,12 @@ L110:
                 /* Otherwise, use in-line code for the dot product. */
                 if ( upper ) {
                     for( i = 0; i < j; ++i ) {
-                        csumj += (*A(i,j) * uscal) * x[i];
+                        csumj = csumj + (*A(i,j) * uscal) * x[i];
                     }
                 }
                 else if ( j < n-1 ) {
                     for( i = j+1; i < n; ++i ) {
-                        csumj += (*A(i,j) * uscal) * x[i];
+                        csumj = csumj + (*A(i,j) * uscal) * x[i];
                     }
                 }
             }
@@ -598,7 +598,7 @@ L110:
             if ( uscal == MAGMA_C_MAKE( tscal, 0. )) {
                 /* Compute x(j) := ( x(j) - CSUMJ ) / A(j,j) if 1/A(j,j) */
                 /* was not used to scale the dotproduct. */
-                x[j] -= csumj;
+                x[j] = x[j] - csumj;
                 xj = MAGMA_C_ABS1( x[j] );
                 if ( nounit ) {
                     tjjs = (*A(j,j) - lambda) * tscal;
@@ -703,12 +703,12 @@ L160:
                 /* Otherwise, use in-line code for the dot product. */
                 if ( upper ) {
                     for( i = 0; i < j; ++i ) {
-                        csumj += (MAGMA_C_CONJ( *A(i,j) ) * uscal) * x[i];
+                        csumj = csumj + (MAGMA_C_CONJ( *A(i,j) ) * uscal) * x[i];
                     }
                 }
                 else if ( j < n-1 ) {
                     for( i = j + 1; i < n; ++i ) {
-                        csumj += (MAGMA_C_CONJ( *A(i,j) ) * uscal) * x[i];
+                        csumj = csumj + (MAGMA_C_CONJ( *A(i,j) ) * uscal) * x[i];
                     }
                 }
             }
@@ -716,7 +716,7 @@ L160:
             if ( uscal == tscal ) {
                 /* Compute x(j) := ( x(j) - CSUMJ ) / A(j,j) if 1/A(j,j) */
                 /* was not used to scale the dotproduct. */
-                x[j] -= csumj;
+                x[j] = x[j] - csumj;
                 xj = MAGMA_C_ABS1( x[j] );
                 if ( nounit ) {
                     tjjs = MAGMA_C_CONJ( *A(j,j) - lambda ) * tscal;
